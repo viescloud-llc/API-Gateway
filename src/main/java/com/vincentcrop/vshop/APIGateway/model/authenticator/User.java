@@ -22,5 +22,5 @@ public class User
 
     private UserProfile userProfile;
 
-    private List<UserRole> userRoles;
+    private List<Role> userRoles;
 }

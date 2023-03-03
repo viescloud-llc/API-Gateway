@@ -1,5 +1,7 @@
 package com.vincentcrop.vshop.APIGateway.model.authenticator;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,14 +9,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRole 
+public class Route 
 {
-    public UserRole(Role role)
-    {
-        this.role = role;
-    }
-
     private int id;
+    
+    private String path;
 
-    private Role role;
+    private String method;
+
+    private boolean secure = false;
+
+    private List<Role> roles;
 }

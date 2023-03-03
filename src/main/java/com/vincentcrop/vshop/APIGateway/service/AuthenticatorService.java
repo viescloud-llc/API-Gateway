@@ -9,8 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
-import com.vincentcrop.vshop.APIGateway.http.HttpResponseThrowers;
+import com.vincentcrop.vshop.APIGateway.model.authenticator.Route;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
+import com.vincentcrop.vshop.APIGateway.util.HttpResponseThrowers;
 
 import feign.FeignException;
 
@@ -37,14 +38,27 @@ public class AuthenticatorService
 
         return user;
     }
+
+    public List<Route> getAllRoute()
+    {
+        try
+        {
+            List<Route> list = this.authenticatorClient.getAllRoutes().getBody();
+            return list;
+        }
+        catch(Exception ex)
+        {
+            return null;
+        }
+    }
     
     public boolean hasAnyAuthority(User user, List<String> roles)
     {
-        return user.getUserRoles().parallelStream().anyMatch((ur) -> roles.parallelStream().anyMatch(r -> ur.getRole().getName().equals(r)));
+        return user.getUserRoles().parallelStream().anyMatch((ur) -> roles.parallelStream().anyMatch(r -> ur.getName().equals(r)));
     }
     
     public boolean hasAllAuthority(User user, List<String> roles)
     {
-        return roles.stream().allMatch(r -> user.getUserRoles().parallelStream().anyMatch(ur -> ur.getRole().getName().equals(r)));
+        return roles.stream().allMatch(r -> user.getUserRoles().parallelStream().anyMatch(ur -> ur.getName().equals(r)));
     }
 }
