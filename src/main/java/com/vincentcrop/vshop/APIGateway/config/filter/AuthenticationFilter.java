@@ -29,7 +29,7 @@ import reactor.core.publisher.Mono;
 public class AuthenticationFilter implements GatewayFilter
 {
     private final String DEFAULT_ROLE = "OWNER";
-
+ 
     @Autowired
     private AuthenticatorService authenticatorService;
 
