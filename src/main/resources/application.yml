@@ -1,3 +1,6 @@
+server:
+    port: 8081
+
 spring.cloud.vault:
     token: hvs.CAESINiJJS_VEJbRgo4CqqxDFY-sOuOjoSQUDENEYNISsbIIGh4KHGh2cy5Ka05ON1praGU3aVFWdDNGYlhMTWluSjc
     host: 192.168.1.200
@@ -7,3 +10,4 @@ spring.cloud.vault:
     connection-timeout: 5000
     read-timeout: 15000
 spring.config.import: vault://vshop/gateway/dev
+
