@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RedisConfig extends CachingConfigurerSupport implements CachingConfigurer
 {
-
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
