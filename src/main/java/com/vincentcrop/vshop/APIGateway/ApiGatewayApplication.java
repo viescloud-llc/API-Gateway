@@ -1,5 +1,6 @@
 package com.vincentcrop.vshop.APIGateway;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApiGatewayApplication {
 
+	@Value("${spring.profiles.active}")
+	private String env = "dev";
+
 	public static void main(String[] args) 
 	{
 		SpringApplication.run(ApiGatewayApplication.class, args);
@@ -20,6 +24,6 @@ public class ApiGatewayApplication {
 
 	@GetMapping("/_status/healthz")
 	public String healthCheck() {
-		return "API Gateway up and running";
+		return String.format("API Gateway %s is up and running", env);
 	}
 }
