@@ -11,9 +11,9 @@ spec:
   - 192.168.1.101
   ports:
   - name: http
-    port: 8082 #local out port
+    port: 82 #local out port
     protocol: TCP
-    targetPort: 8082 # container port
+    targetPort: 82 # container port
   selector:
     app: api-gateway-stage #find all pod with app name
   sessionAffinity: None
