@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-stage-deployment
+  labels:
+    app: api-gateway-stage
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway-stage
+  template:
+    metadata:
+      labels:
+        app: api-gateway-stage
+    spec:
+      containers:
+      - name: api-gateway-stage
+        image: vincentbuiwork/api-gateway:stage
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "750MB"
+            cpu: "0.5"
+        ports:
+        - containerPort: 8082
