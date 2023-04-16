@@ -1,14 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway-stage-deployment
+  name: api-gateway-stage
+  namespace: api-gateway-stage
   labels:
     app: api-gateway-stage
 spec:
-  replicas: 3
   selector:
     matchLabels:
       app: api-gateway-stage
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -19,8 +25,29 @@ spec:
         image: vincentbuiwork/api-gateway:stage
         imagePullPolicy: Always
         resources:
+          requests:
+            cpu: 0.5
+            memory: 500M
           limits:
-            memory: "750MB"
-            cpu: "0.5"
+            cpu: 2
+            memory: 2Gi
+        livenessProbe:
+          tcpSocket:
+            port: 82
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 82
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
         ports:
-        - containerPort: 8082
+        - containerPort: 82
+      restartPolicy: Always

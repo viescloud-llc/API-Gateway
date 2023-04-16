@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       app: api-gateway-dev
-  replicas: 1
+  replicas: 3
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -23,14 +23,11 @@ spec:
       containers:
       - name: api-gateway-dev
         image: vincentbuiwork/api-gateway:dev
-        env:
-        - name: server.port
-          value: 83
         imagePullPolicy: Always
         resources:
           requests:
             cpu: 0.5
-            memory: 10M
+            memory: 500M
           limits:
             cpu: 2
             memory: 1Gi
