@@ -2,7 +2,6 @@ server:
   port: 83
 
 spring.cloud.vault:
-    token: hvs.CAESIPieyILXp-xddGSyPDro3Fc7VSC8L6tLG0zEOqb9b-0CGh4KHGh2cy40SjdsV05UVjBYSHlUMGZlcTdFTUdtYXY
     host: 192.168.1.200
     port: 8200
     scheme: http
