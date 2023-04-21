@@ -28,7 +28,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class AuthenticationFilter implements GatewayFilter
 {
-    private final String DEFAULT_ROLE = "OWNER";
+    private final String DEFAULT_ROLE_OWNER = "OWNER";
+    private final String DEFAULT_ROLE_CO_OWNER = "CO-OWNER";
  
     @Autowired
     private AuthenticatorService authenticatorService;
@@ -85,7 +86,7 @@ public class AuthenticationFilter implements GatewayFilter
         if(anyMatch)
             return anyMatch;
 
-        return user.getUserRoles().parallelStream().anyMatch(r -> r.getName().equals(DEFAULT_ROLE));
+        return user.getUserRoles().parallelStream().anyMatch(r -> r.getName().equals(DEFAULT_ROLE_OWNER) || r.getName().equals(DEFAULT_ROLE_CO_OWNER));
     }
 
     private boolean anyMatchRole(List<Role> originRole, List<Role> targetRole)
