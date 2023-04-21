@@ -24,11 +24,11 @@ public class GatewayConfig
                 .uri("http://httpbin.org:80"))
             .route("AUTHENTICATOR-SERVICE", r -> r
                 .path("/authenticator/**")
-				.filters(f -> f.stripPrefix(1).filter(authenticationFilter))
+				.filters(f -> f.filter(authenticationFilter))
                 .uri("lb://AUTHENTICATOR-SERVICE"))
             .route("ITEM-SERVICE", r -> r
                 .path("/item/**")
-				.filters(f -> f.stripPrefix(1).filter(authenticationFilter))
+				.filters(f -> f.filter(authenticationFilter))
                 .uri("lb://ITEM-SERVICE"))
             .build();
     }
