@@ -13,7 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.config.WebFluxConfigurerComposite;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.converter.HttpMessageConverter;
+
 import com.google.gson.Gson;
 
 @Configuration
@@ -23,7 +27,96 @@ public class BeanConfig
     public HttpMessageConverters messageConverter(ObjectProvider<HttpMessageConverter<?>> converter)
     {
         return new HttpMessageConverters(converter.orderedStream().collect(Collectors.toList()));
-    }    
+    }   
+
+    @Bean
+    public WebFluxConfigurer corsConfigurer() {
+        return new WebFluxConfigurerComposite() {
+
+            @Override
+            public void addCorsMappings(org.springframework.web.reactive.config.CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedHeaders("*")
+                        .allowedOrigins("*")
+                        .allowedMethods("*");
+            }
+        };
+    }
+
+    @Bean
+    public WebMvcConfigurer CORSConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedHeaders("*")
+                        .allowedMethods("*");
+            }
+        };
+    }
+
+    // @Bean
+    // public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    //     http.cors(cors -> cors.disable());
+    //     return http.build();
+    // }
+
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() 
+    // {
+    //     CorsConfiguration configuration = new CorsConfiguration();
+    //     configuration.setAllowedOrigins(Arrays.asList(origins));
+    //     configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+    //     configuration.setAllowedHeaders(Arrays.asList("Origin", "X-Requested-With", "Content-Type", "Accept"));
+    //     configuration.setAllowCredentials(true);
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", configuration);
+    //     return source;
+    // }
+
+    // @Bean
+    // public CorsFilter corsFilter() {
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     CorsConfiguration config = new CorsConfiguration();
+    //     config.setAllowCredentials(true);
+    //     config.addAllowedOrigin("*");
+    //     config.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));
+    //     config.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
+    //     source.registerCorsConfiguration("/**", config);
+    //     return new CorsFilter(source);
+    // }
+    
+    
+
+    // @Bean
+    // public WebMvcConfigurer corsConfigurer() {
+    //     return new WebMvcConfigurer() {
+    //         @Override
+    //         public void addCorsMappings(CorsRegistry registry) {
+    //             registry.addMapping("/*")
+    //                     .allowedOrigins("*")
+    //                     .allowedHeaders("*")
+    //                     .allowCredentials(true);
+    //         }
+    //     };
+    // }
+
+    // @Bean
+    // public CorsWebFilter corsWebFilter() {
+    //     CorsConfiguration corsConfig = new CorsConfiguration();
+    //     corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "*", "**"));
+    //     corsConfig.setMaxAge(3600L);
+    //     corsConfig.addAllowedMethod("*");
+    //     corsConfig.addAllowedHeader("Requestor-Type");
+    //     corsConfig.addExposedHeader("X-Get-Header");
+
+    //     UrlBasedCorsConfigurationSource source =
+    //         new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", corsConfig);
+
+    //     return new CorsWebFilter(source);
+    // }
 
     @Bean
     public Gson gson()

@@ -65,11 +65,21 @@ public class AuthenticationFilter implements GatewayFilter
             HttpResponseThrowers.throwServerError("server is experiencing some error");
         }
 
+        // addCors(exchange.getResponse());
+
         return chain.filter(exchange);
     }
     
 
     /*PRIVATE*/
+
+    private void addCors(ServerHttpResponse response)
+    {
+        var header = response.getHeaders();
+        header.add("Access-Control-Allow-Origin", "*");
+        header.add("Access-Control-Allow-Methods", "*");
+        header.add("Access-Control-Allow-Headers", "*");
+    }
 
     private boolean isValidRoute(String path, String requestMethod, User user)
     {
