@@ -2,6 +2,7 @@ package com.vincentcrop.vshop.APIGateway.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,5 +32,13 @@ public class GatewayConfig
 				.filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                 .uri("lb://ITEM-SERVICE"))
             .build();
+    }
+
+    private GatewayFilterSpec addCors(GatewayFilterSpec gatewayFilterSpec)
+    {
+        gatewayFilterSpec.addResponseHeader("Access-Control-Allow-Origin", "*");
+        gatewayFilterSpec.addResponseHeader("Access-Control-Allow-Methods", "*");
+        gatewayFilterSpec.addResponseHeader("Access-Control-Allow-Headers", "*");
+        return gatewayFilterSpec;
     }
 }
