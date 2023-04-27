@@ -76,12 +76,30 @@ public class AuthenticationFilter implements GatewayFilter
         if(user == null)
             return false;
 
-        List<Route> routelist = this.authenticatorService.getAllRoute();
+        List<Route> routeList = this.authenticatorService.getAllRoute();
+
+        /*
+         * match rule:
+         * 1 is secure
+         * same method
+         * same path
+         * same role
+         * 
+         * have extra exact match to prioritize specific path first 
+         */
+
+        boolean anyMatchExact = routeList.parallelStream().anyMatch(e -> {
+            String ePath = e.getPath();
+            return e.isSecure() && requestMethod.equals(e.getMethod()) && ePath.equals(path) && anyMatchRole(e.getRoles(), user.getUserRoles());
+        });
         
-        boolean anyMatch = routelist.parallelStream().anyMatch(e -> {
+        boolean anyMatch = routeList.parallelStream().anyMatch(e -> {
             String ePath = e.getPath();
             return e.isSecure() && requestMethod.equals(e.getMethod()) && Pattern.matches("^" + ePath, path) && anyMatchRole(e.getRoles(), user.getUserRoles());
         });
+
+        if(anyMatchExact)
+            return anyMatchExact;
 
         if(anyMatch)
             return anyMatch;
