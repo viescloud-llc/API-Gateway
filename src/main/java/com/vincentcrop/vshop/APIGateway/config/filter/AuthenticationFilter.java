@@ -2,6 +2,7 @@ package com.vincentcrop.vshop.APIGateway.config.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -88,9 +89,13 @@ public class AuthenticationFilter implements GatewayFilter
          * have extra exact match to prioritize specific path first 
          */
 
+        AtomicBoolean matchRole = new AtomicBoolean();
         boolean anyMatchExact = routeList.parallelStream().anyMatch(e -> {
             String ePath = e.getPath();
-            return e.isSecure() && requestMethod.equals(e.getMethod()) && ePath.equals(path) && anyMatchRole(e.getRoles(), user.getUserRoles());
+            boolean anyMatchExactI = e.isSecure() && requestMethod.equals(e.getMethod()) && ePath.equals(path);
+            if(anyMatchExactI)
+                matchRole.set(anyMatchRole(e.getRoles(), user.getUserRoles()));
+            return anyMatchExactI;
         });
         
         boolean anyMatch = routeList.parallelStream().anyMatch(e -> {
@@ -99,7 +104,7 @@ public class AuthenticationFilter implements GatewayFilter
         });
 
         if(anyMatchExact)
-            return anyMatchExact;
+            return matchRole.get();
 
         if(anyMatch)
             return anyMatch;
