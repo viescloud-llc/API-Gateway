@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiGatewayApplication {
 
 	@Value("${spring.profiles.active}")
-	private String env = "dev";
+	private String env = "?";
 
 	public static void main(String[] args) 
 	{
