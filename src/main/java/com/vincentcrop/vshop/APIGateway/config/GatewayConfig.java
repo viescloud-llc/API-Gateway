@@ -19,18 +19,26 @@ public class GatewayConfig
     public RouteLocator gatewayRouter(RouteLocatorBuilder builder)
     {
         return builder.routes()
+            //-----------------------------TESTING---------------------------------------
             .route(r -> r
                 .path("/get")
                 .filters(f -> f.addRequestHeader("Hello", "World"))
                 .uri("http://httpbin.org:80"))
+            //------------------------AUTHENTICATOR-SERVICE------------------------------
             .route("AUTHENTICATOR-SERVICE", r -> r
                 .path("/authenticator/**")
 				.filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                 .uri("lb://AUTHENTICATOR-SERVICE"))
+            //------------------------ITEM-SERVICE---------------------------------------
             .route("ITEM-SERVICE", r -> r
                 .path("/item/**")
 				.filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                 .uri("lb://ITEM-SERVICE"))
+            //------------------------GAME-SERVICE---------------------------------------
+            .route("VGAME-SERVICE", r -> r
+                .path("/vgame/**")
+				.filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                .uri("lb://VGAME-SERVICE"))
             .build();
     }
 
