@@ -41,12 +41,4 @@ public class GatewayConfig
                 .uri("lb://VGAME-SERVICE"))
             .build();
     }
-
-    private GatewayFilterSpec addCors(GatewayFilterSpec gatewayFilterSpec)
-    {
-        gatewayFilterSpec.addResponseHeader("Access-Control-Allow-Origin", "*");
-        gatewayFilterSpec.addResponseHeader("Access-Control-Allow-Methods", "*");
-        gatewayFilterSpec.addResponseHeader("Access-Control-Allow-Headers", "*");
-        return gatewayFilterSpec;
-    }
 }

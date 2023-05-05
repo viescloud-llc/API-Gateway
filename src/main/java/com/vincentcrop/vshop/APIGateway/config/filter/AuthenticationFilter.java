@@ -1,9 +1,7 @@
 package com.vincentcrop.vshop.APIGateway.config.filter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
