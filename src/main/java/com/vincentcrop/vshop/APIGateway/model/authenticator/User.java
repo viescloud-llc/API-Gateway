@@ -23,4 +23,6 @@ public class User
     private UserProfile userProfile;
 
     private List<Role> userRoles;
+
+    private boolean enable;
 }

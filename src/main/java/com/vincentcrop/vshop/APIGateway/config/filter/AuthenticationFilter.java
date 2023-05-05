@@ -74,7 +74,7 @@ public class AuthenticationFilter implements GatewayFilter
 
     private boolean isValidRoute(String path, String requestMethod, User user)
     {
-        if(user == null)
+        if(user == null || !user.isEnable())
             return false;
 
         List<Route> routeList = this.authenticatorService.getAllRoute();
