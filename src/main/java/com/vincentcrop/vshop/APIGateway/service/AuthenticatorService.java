@@ -1,9 +1,12 @@
 package com.vincentcrop.vshop.APIGateway.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.Route;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
@@ -40,11 +43,15 @@ public class AuthenticatorService
         try
         {
             List<Route> list = this.authenticatorClient.getAllRoutes().getBody();
+            
+            if(ObjectUtils.isEmpty(list))
+                list = new ArrayList<>();
+
             return list;
         }
         catch(Exception ex)
         {
-            return null;
+            return new ArrayList<>();
         }
     }
     
