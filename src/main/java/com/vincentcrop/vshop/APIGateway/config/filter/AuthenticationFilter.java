@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.vincentcrop.vshop.APIGateway.model.authenticator.Role;
@@ -42,21 +43,22 @@ public class AuthenticationFilter implements GatewayFilter
 
             String requestMethod = request.getMethod().name();
             String path = request.getURI().getPath();
+
+            final String token = this.getAuthHeader(request);
+    
+            User user = this.authenticatorService.getUser(token);
     
             if (isNotOpenEndpoint(path, requestMethod)) 
             {
                 if (this.isAuthMissing(request))
                     return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
     
-                final String token = this.getAuthHeader(request);
-    
-                User user = this.authenticatorService.getUser(token);
-    
                 if (!isValidRoute(path, requestMethod, user))
                     return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
-    
-                this.populateRequestWithHeaders(exchange, user);
             }
+            
+            if(!ObjectUtils.isEmpty(user))
+                this.populateRequestWithHeaders(exchange, user);
         }
         catch(Exception ex)
         {
