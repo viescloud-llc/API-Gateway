@@ -56,7 +56,7 @@ public class AuthenticationFilter implements GatewayFilter
                 if (!isValidRoute(path, requestMethod, user))
                     return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
             }
-            
+
             if(!ObjectUtils.isEmpty(user))
                 this.populateRequestWithHeaders(exchange, user);
         }
@@ -139,7 +139,11 @@ public class AuthenticationFilter implements GatewayFilter
 
     private String getAuthHeader(ServerHttpRequest request) 
     {
-        String[] tokens = request.getHeaders().getOrEmpty("Authorization").get(0).split(" ");
+        List<String> headers = request.getHeaders().getOrEmpty("Authorization");
+        if(headers.isEmpty())
+            return null;
+
+        String[] tokens = headers.get(0).split(" ");
         String token = null;
         if(tokens.length > 1)
             token = tokens[tokens.length - 1];
