@@ -30,6 +30,9 @@ public interface AuthenticatorClient
 
     @RequestMapping(method = RequestMethod.POST, value = "/auth/login")
     public ResponseEntity<Jwt> login(@RequestBody User user);
+
+    @PostMapping("/users")
+    public ResponseEntity<User> register(@RequestBody User user);
     
     @PostMapping("/auth/any_authority")
     public ResponseEntity<String> hasAnyAuthority(@RequestHeader("Authorization") String jwt, @RequestBody List<String> roles);

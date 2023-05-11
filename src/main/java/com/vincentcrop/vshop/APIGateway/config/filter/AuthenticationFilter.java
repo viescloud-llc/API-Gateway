@@ -44,20 +44,18 @@ public class AuthenticationFilter implements GatewayFilter
             String requestMethod = request.getMethod().name();
             String path = request.getURI().getPath();
 
-            User user = null;
+            final String token = this.getAuthHeader(request);
+            User user = this.authenticatorService.getUser(token);
     
             if (isNotOpenEndpoint(path, requestMethod)) 
             {
                 if (this.isAuthMissing(request))
                     return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
                 
-                final String token = this.getAuthHeader(request);
-                user = this.authenticatorService.getUser(token);
-
                 if (!isValidRoute(path, requestMethod, user))
                     return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
             }
-
+            
             if(!ObjectUtils.isEmpty(user))
                 this.populateRequestWithHeaders(exchange, user);
         }
