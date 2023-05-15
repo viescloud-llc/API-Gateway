@@ -16,12 +16,12 @@ public class DefaultController {
     @Autowired
     private AuthenticatorClient authenticatorClient;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<Jwt> login(@RequestBody User user) {
         return this.authenticatorClient.login(user);
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
         return this.authenticatorClient.register(user);
     }
