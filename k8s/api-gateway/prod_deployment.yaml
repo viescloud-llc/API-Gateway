@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway-prod
+  name: api-gateway-prod-deployment
   namespace: api-gateway-prod
   labels:
     app: api-gateway-prod
@@ -28,7 +28,7 @@ spec:
           requests:
             memory: 500M
           limits:
-            memory: 1.5Gi
+            memory: 2Gi
         livenessProbe:
           tcpSocket:
             port: 81

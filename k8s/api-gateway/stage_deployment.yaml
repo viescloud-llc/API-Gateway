@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway-stage
+  name: api-gateway-stage-deployment
   namespace: api-gateway-stage
   labels:
     app: api-gateway-stage
