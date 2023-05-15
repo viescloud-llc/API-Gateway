@@ -19,7 +19,7 @@ import com.vincentcrop.vshop.APIGateway.model.authenticator.Role;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.Route;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
 import com.vincentcrop.vshop.APIGateway.service.AuthenticatorService;
-import com.vincentcrop.vshop.APIGateway.util.HttpResponseThrowers;
+import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
 import com.vincentcrop.vshop.APIGateway.util.splunk.Splunk;
 
 import reactor.core.publisher.Mono;

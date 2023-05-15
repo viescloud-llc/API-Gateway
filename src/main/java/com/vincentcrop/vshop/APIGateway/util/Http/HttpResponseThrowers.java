@@ -1,4 +1,4 @@
-package com.vincentcrop.vshop.APIGateway.util;
+package com.vincentcrop.vshop.APIGateway.util.Http;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

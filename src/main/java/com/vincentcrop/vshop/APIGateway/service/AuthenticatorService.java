@@ -10,7 +10,7 @@ import org.springframework.util.ObjectUtils;
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.Route;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
-import com.vincentcrop.vshop.APIGateway.util.HttpResponseThrowers;
+import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
 
 import feign.FeignException;
 
