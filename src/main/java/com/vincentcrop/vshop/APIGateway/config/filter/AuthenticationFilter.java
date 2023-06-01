@@ -3,6 +3,7 @@ package com.vincentcrop.vshop.APIGateway.config.filter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -96,6 +97,8 @@ public class AuthenticationFilter implements GatewayFilter
                 matchRole.set(anyMatchRole(e.getRoles(), user.getUserRoles()));
             return anyMatchExactI;
         });
+
+        routeList = routeList.parallelStream().sorted((a, b) -> Integer.compare(a.getPath().length(), b.getPath().length())).collect(Collectors.toList());
         
         boolean anyMatch = routeList.parallelStream().anyMatch(e -> {
             String ePath = e.getPath();
