@@ -15,7 +15,7 @@ import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
 
 import feign.Headers;
 
-@FeignClient("lb://AUTHENTICATOR-SERVICE")
+@FeignClient("AUTHENTICATOR-SERVICE")
 @Headers("Content-Type: application/json")
 public interface AuthenticatorClient
 {
