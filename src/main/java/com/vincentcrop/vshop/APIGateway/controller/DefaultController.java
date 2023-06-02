@@ -2,6 +2,7 @@ package com.vincentcrop.vshop.APIGateway.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,16 @@ public class DefaultController {
 	public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
 		return authenticatorClient.getLoginUser(jwt);
 	}
+
+    @GetMapping("/logout")
+    public void logout(@RequestHeader("Authorization") String jwt) {
+        this.authenticatorClient.logout(jwt);
+    }
+
+    @GetMapping("/auth")
+    public Object isLogin(@RequestHeader("Authorization") String jwt) {
+        return this.authenticatorClient.isLogin(jwt);
+    }
 
     @PostMapping("/login")
     public Object login(@RequestBody User user) {

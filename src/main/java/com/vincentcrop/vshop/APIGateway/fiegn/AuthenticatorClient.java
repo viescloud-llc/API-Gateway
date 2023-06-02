@@ -27,12 +27,6 @@ public interface AuthenticatorClient
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getById(@PathVariable("id") int id);
-
-    @PostMapping("/auth/login")
-    public Object login(@RequestBody User user);
-
-    @PostMapping("/users")
-    public Object register(@RequestBody User user);
     
     @PostMapping("/auth/any_authority")
     public ResponseEntity<String> hasAnyAuthority(@RequestHeader("Authorization") String jwt, @RequestBody List<String> roles);
@@ -42,4 +36,16 @@ public interface AuthenticatorClient
 
     @GetMapping("/routes")
     public ResponseEntity<List<Route>> getAllRoutes();
+
+    @PostMapping("/users")
+    public Object register(@RequestBody User user);
+
+    @PostMapping("/auth/login")
+    public Object login(@RequestBody User user);
+
+    @GetMapping("/auth/logout")
+    public void logout(@RequestHeader("Authorization") String jwt);
+
+    @GetMapping("/auth")
+    public Object isLogin(@RequestHeader("Authorization") String jwt);
 }
