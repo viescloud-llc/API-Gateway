@@ -77,11 +77,15 @@ public class AuthenticationFilter implements GatewayFilter
         return charLength;
     }
 
+    /**
+     * 
+     * @param path
+     * @param requestMethod
+     * @param user
+     * @return
+     */
     public boolean isValidRoute(String path, String requestMethod, User user)
     {
-        if(user != null && !user.isEnable())
-            return false;
-
         List<Route> routes = this.authenticatorService.getAllRoute();
         routes = routes.parallelStream().sorted((a, b) -> routeCompare(a, b)).collect(Collectors.toList());
 
@@ -127,7 +131,7 @@ public class AuthenticationFilter implements GatewayFilter
         if(anyMatch)
             return matchCriteria.get();
 
-        if(ObjectUtils.isEmpty(user))
+        if(ObjectUtils.isEmpty(user) || !user.isEnable())
             return false;
 
         return user.getUserRoles().parallelStream().anyMatch(r -> r.getName().equals(DEFAULT_ROLE_OWNER) || r.getName().equals(DEFAULT_ROLE_CO_OWNER));

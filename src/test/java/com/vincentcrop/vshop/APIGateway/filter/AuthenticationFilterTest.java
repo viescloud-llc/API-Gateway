@@ -73,6 +73,12 @@ public class AuthenticationFilterTest {
         return User.builder().enable(true).userRoles(roles).build();
     }
 
+    private User getDisableNormalUser() {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.builder().level(2).name("ADMIN").build());
+        return User.builder().enable(true).userRoles(roles).enable(false).build();
+    }
+
     @Test
     void routePriorityTest() {
         //Secure test
@@ -100,6 +106,13 @@ public class AuthenticationFilterTest {
         assertTrue(valid);
 
         valid = this.authenticationFilter.isValidRoute("/2/valid", "GET", getNormalUser());
+        assertFalse(valid);
+
+        //disable user check
+        valid = this.authenticationFilter.isValidRoute("/something", "GET", getDisableNormalUser());
+        assertTrue(valid);
+        
+        valid = this.authenticationFilter.isValidRoute("/1/1", "GET", getDisableNormalUser());
         assertFalse(valid);
     }
     
