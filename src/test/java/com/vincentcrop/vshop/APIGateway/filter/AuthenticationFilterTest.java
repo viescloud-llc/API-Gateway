@@ -71,6 +71,12 @@ public class AuthenticationFilterTest {
         return User.builder().enable(true).userRoles(roles).build();
     }
 
+    private User getOwnerUser() {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.builder().level(2).name("OWNER").build());
+        return User.builder().enable(true).userRoles(roles).build();
+    }
+
     private User getDisableNormalUser() {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.builder().level(2).name("ADMIN").build());
@@ -112,6 +118,10 @@ public class AuthenticationFilterTest {
 
         valid = this.authenticationFilter.isValidRoute("/1/1", "GET", getDisableNormalUser());
         assertFalse(valid);
+
+        //OWNER check
+        valid = this.authenticationFilter.isValidRoute("/1/garbage", "GET", getOwnerUser());
+        assertTrue(valid);
     }
     
 }

@@ -87,19 +87,15 @@ public class AuthenticationFilter implements GatewayFilter
      */
     public boolean isValidRoute(String path, String requestMethod, User user)
     {
+        //return true if this is super user
+        if(isSuperPowerUser(user))
+            return true;
+
+        //sort the list in length desc
         List<Route> routes = this.authenticatorService.getAllRoute();
         routes = routes.parallelStream().sorted((a, b) -> routeCompare(a, b)).collect(Collectors.toList());
 
-        /*
-         * match rule:
-         * 1 is secure
-         * same method
-         * same path
-         * same role
-         * 
-         * have extra exact match to prioritize specific path first 
-         */
-
+        //exact path match check
         AtomicBoolean matchCriteria = new AtomicBoolean(false);
         boolean anyMatchExact = routes.parallelStream().anyMatch(e -> {
             String ePath = e.getPath();
@@ -116,6 +112,7 @@ public class AuthenticationFilter implements GatewayFilter
         if(anyMatchExact)
             return matchCriteria.get();
         
+        //match path check
         matchCriteria.set(false);
         boolean anyMatch = routes.stream().anyMatch(e -> {
             String ePath = e.getPath();
@@ -132,10 +129,14 @@ public class AuthenticationFilter implements GatewayFilter
         if(anyMatch)
             return matchCriteria.get();
 
-        if(ObjectUtils.isEmpty(user) || !user.isEnable())
-            return false;
+        // if(ObjectUtils.isEmpty(user) || !user.isEnable())
+        //     return false;
+        
+        return false;
+    }
 
-        return user.getUserRoles().parallelStream().anyMatch(r -> r.getName().equals(DEFAULT_ROLE_OWNER) || r.getName().equals(DEFAULT_ROLE_CO_OWNER));
+    public boolean isSuperPowerUser(User user) {
+        return !ObjectUtils.isEmpty(user) && user.getUserRoles().parallelStream().anyMatch(r -> r.getName().equals(DEFAULT_ROLE_OWNER) || r.getName().equals(DEFAULT_ROLE_CO_OWNER));
     }
 
     public boolean anyMatchRole(List<Role> originRole, List<Role> targetRole)
