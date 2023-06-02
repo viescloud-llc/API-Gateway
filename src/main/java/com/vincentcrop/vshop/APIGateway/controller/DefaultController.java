@@ -27,7 +27,7 @@ public class DefaultController {
 
     @GetMapping("/user")
 	public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
-		return authenticatorClient.getUser(jwt);
+		return authenticatorClient.getLoginUser(jwt);
 	}
 
     @PostMapping("/login")

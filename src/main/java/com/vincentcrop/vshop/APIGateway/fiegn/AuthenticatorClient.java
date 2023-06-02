@@ -20,7 +20,10 @@ import feign.Headers;
 public interface AuthenticatorClient
 {
     @GetMapping(value = "/users", consumes = "application/json", produces="application/json")
-    public Object getUser(@RequestHeader(required = false, value = "Authorization") String jwt1);
+    public Object getLoginUser(@RequestHeader(required = false, value = "Authorization") String jwt);
+
+    @GetMapping(value = "/users", consumes = "application/json", produces="application/json")
+    public User getLoginUserWithCast(@RequestHeader("Authorization") String jwt);
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getById(@PathVariable("id") int id);

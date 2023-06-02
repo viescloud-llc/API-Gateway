@@ -26,7 +26,7 @@ public class AuthenticatorService
 
         try
         {
-            user = (User) authenticatorClient.getUser(jwt);
+            user = authenticatorClient.getLoginUserWithCast(jwt);
         }
         catch(FeignException ex)
         {
