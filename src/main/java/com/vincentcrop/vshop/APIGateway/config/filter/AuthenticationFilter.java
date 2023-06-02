@@ -2,8 +2,6 @@ package com.vincentcrop.vshop.APIGateway.config.filter;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -78,11 +76,14 @@ public class AuthenticationFilter implements GatewayFilter
     }
 
     /**
-     * 
-     * @param path
-     * @param requestMethod
-     * @param user
-     * @return
+     * this function will check if path is valid with these criteria in order
+     * 1. exact path get check first
+     * 2. long path get match first
+     * 3. wild card path get match last
+     * @param path to be match
+     * @param requestMethod to be match
+     * @param user login user
+     * @return true if a path match is found else false
      */
     public boolean isValidRoute(String path, String requestMethod, User user)
     {
@@ -145,6 +146,17 @@ public class AuthenticationFilter implements GatewayFilter
         return originRole.parallelStream().anyMatch(or -> targetRole.parallelStream().anyMatch(tr -> tr.equals(or)));
     }
 
+    /**
+     * check if path is a secure path
+     * @deprecated
+     * this method is no longer use due to inaccurate checking
+     * <p> use {@link #isValidRoute(String, String, User) isValidRoute} instead
+     * @param path to be match
+     * @param requestMethod to be match
+     * @param routes to be match with
+     * @return true if a path match is found else false
+     */
+    @Deprecated
     public boolean isSecure(String path, String requestMethod, List<Route> routes)
     {
         return routes.parallelStream().noneMatch(e -> {

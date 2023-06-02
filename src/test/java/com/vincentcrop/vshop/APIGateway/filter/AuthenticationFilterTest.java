@@ -11,9 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilter;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.Role;
@@ -111,7 +109,7 @@ public class AuthenticationFilterTest {
         //disable user check
         valid = this.authenticationFilter.isValidRoute("/something", "GET", getDisableNormalUser());
         assertTrue(valid);
-        
+
         valid = this.authenticationFilter.isValidRoute("/1/1", "GET", getDisableNormalUser());
         assertFalse(valid);
     }
