@@ -2,6 +2,7 @@ package com.vincentcrop.vshop.APIGateway.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
+
+import feign.FeignException;
+import feign.FeignException.FeignClientException;
 
 @RestController
 public class DefaultController {
@@ -36,8 +40,15 @@ public class DefaultController {
     }
 
     @GetMapping("/auth")
-    public Object isLogin(@RequestHeader("Authorization") String jwt) {
-        return this.authenticatorClient.isLogin(jwt);
+    public ResponseEntity<?> isLogin(@RequestHeader("Authorization") String jwt) {
+        try {
+            this.authenticatorClient.isLogin(jwt);
+            return ResponseEntity.ok().build();
+        }
+        catch(FeignException.BadRequest ex){
+            return ResponseEntity.badRequest().build();
+        }
+        
     }
 
     @PostMapping("/login")
