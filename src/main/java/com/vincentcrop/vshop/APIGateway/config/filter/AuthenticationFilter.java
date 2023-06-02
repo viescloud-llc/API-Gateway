@@ -45,7 +45,7 @@ public class AuthenticationFilter implements GatewayFilter
             String requestMethod = request.getMethod().name();
             String path = request.getURI().getPath();
 
-            final String token = this.getAuthHeader(request);
+            final String token = this.getBearerJwt(request);
             User user = this.authenticatorService.getUser(token);
                 
             if (!isValidRoute(path, requestMethod, user)) {
@@ -173,13 +173,22 @@ public class AuthenticationFilter implements GatewayFilter
         return response.setComplete();
     }
 
-    public String getAuthHeader(ServerHttpRequest request) 
+    public String getBearerJwt(ServerHttpRequest request) 
     {
         List<String> headers = request.getHeaders().getOrEmpty("Authorization");
         if(headers.isEmpty())
             return null;
 
-        String[] tokens = headers.get(0).split(" ");
+        String bearer = headers.get(0);
+
+        if(!bearer.contains("Bearer") || !bearer.contains("bearer"))
+            HttpResponseThrowers.throwBadRequest("Token is not bearer token");
+
+        return bearer;
+    }
+
+    public static String extractJwt(String Authorization) {
+        String[] tokens = Authorization.split(" ");
         String token = null;
         if(tokens.length > 1)
             token = tokens[tokens.length - 1];

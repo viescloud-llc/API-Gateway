@@ -1,5 +1,6 @@
 package com.vincentcrop.vshop.APIGateway.filter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -124,4 +125,10 @@ public class AuthenticationFilterTest {
         assertTrue(valid);
     }
     
+    @Test
+    void extractJwtTest() {
+        String auth = "Bearer something";
+        var jwt = AuthenticationFilter.extractJwt(auth);
+        assertEquals(jwt.split(" ").length, 1);
+    }
 }
