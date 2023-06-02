@@ -2,6 +2,8 @@ package com.vincentcrop.vshop.APIGateway.config.filter;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -47,14 +49,12 @@ public class AuthenticationFilter implements GatewayFilter
 
             final String token = this.getAuthHeader(request);
             User user = this.authenticatorService.getUser(token);
-    
-            if (isNotOpenEndpoint(path, requestMethod)) 
-            {
+                
+            if (!isValidRoute(path, requestMethod, user)) {
                 if (this.isAuthMissing(request))
                     return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
-                
-                if (!isValidRoute(path, requestMethod, user))
-                    return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
+
+                return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
             }
             
             if(!ObjectUtils.isEmpty(user))
@@ -68,16 +68,22 @@ public class AuthenticationFilter implements GatewayFilter
 
         return chain.filter(exchange);
     }
-    
 
-    /*PRIVATE*/
+    private int routeCompare(Route a, Route b) {
+        // int splitLength = Integer.compare(b.getPath().split("/").length, a.getPath().split("/").length);
+        int charLength = Integer.compare(b.getPath().length(), a.getPath().length());
 
-    private boolean isValidRoute(String path, String requestMethod, User user)
+        // return splitLength > charLength ? splitLength : charLength;
+        return charLength;
+    }
+
+    public boolean isValidRoute(String path, String requestMethod, User user)
     {
-        if(user == null || !user.isEnable())
+        if(user != null && !user.isEnable())
             return false;
 
-        List<Route> routeList = this.authenticatorService.getAllRoute();
+        List<Route> routes = this.authenticatorService.getAllRoute();
+        routes = routes.parallelStream().sorted((a, b) -> routeCompare(a, b)).collect(Collectors.toList());
 
         /*
          * match rule:
@@ -89,32 +95,45 @@ public class AuthenticationFilter implements GatewayFilter
          * have extra exact match to prioritize specific path first 
          */
 
-        AtomicBoolean matchRole = new AtomicBoolean();
-        boolean anyMatchExact = routeList.parallelStream().anyMatch(e -> {
+        AtomicBoolean matchCriteria = new AtomicBoolean(false);
+        boolean anyMatchExact = routes.parallelStream().anyMatch(e -> {
             String ePath = e.getPath();
-            boolean anyMatchExactI = e.isSecure() && requestMethod.equals(e.getMethod()) && ePath.equals(path);
-            if(anyMatchExactI)
-                matchRole.set(anyMatchRole(e.getRoles(), user.getUserRoles()));
+            boolean anyMatchExactI = requestMethod.equals(e.getMethod()) && ePath.equals(path);
+
+            if(anyMatchExactI && !e.isSecure())
+                matchCriteria.set(true);
+            else if(anyMatchExactI && !ObjectUtils.isEmpty(user))
+                matchCriteria.set(!e.isSecure() || anyMatchRole(e.getRoles(), user.getUserRoles()));
+
             return anyMatchExactI;
         });
 
-        routeList = routeList.parallelStream().sorted((a, b) -> Integer.compare(a.getPath().length(), b.getPath().length())).collect(Collectors.toList());
+        if(anyMatchExact)
+            return matchCriteria.get();
         
-        boolean anyMatch = routeList.parallelStream().anyMatch(e -> {
+        matchCriteria.set(false);
+        boolean anyMatch = routes.stream().anyMatch(e -> {
             String ePath = e.getPath();
-            return e.isSecure() && requestMethod.equals(e.getMethod()) && Pattern.matches("^" + ePath, path) && anyMatchRole(e.getRoles(), user.getUserRoles());
+            Boolean match = requestMethod.equals(e.getMethod()) && Pattern.matches("^" + ePath, path);
+
+            if(match && !e.isSecure())
+                matchCriteria.set(true);
+            else if(match && !ObjectUtils.isEmpty(user))
+                matchCriteria.set(anyMatchRole(e.getRoles(), user.getUserRoles()));
+
+            return match;
         });
 
-        if(anyMatchExact)
-            return matchRole.get();
-
         if(anyMatch)
-            return anyMatch;
+            return matchCriteria.get();
+
+        if(ObjectUtils.isEmpty(user))
+            return false;
 
         return user.getUserRoles().parallelStream().anyMatch(r -> r.getName().equals(DEFAULT_ROLE_OWNER) || r.getName().equals(DEFAULT_ROLE_CO_OWNER));
     }
 
-    private boolean anyMatchRole(List<Role> originRole, List<Role> targetRole)
+    public boolean anyMatchRole(List<Role> originRole, List<Role> targetRole)
     {
         if(originRole == null || targetRole == null)
             return false;
@@ -122,24 +141,22 @@ public class AuthenticationFilter implements GatewayFilter
         return originRole.parallelStream().anyMatch(or -> targetRole.parallelStream().anyMatch(tr -> tr.equals(or)));
     }
 
-    private boolean isNotOpenEndpoint(String path, String requestMethod)
+    public boolean isSecure(String path, String requestMethod, List<Route> routes)
     {
-        List<Route> routelist = this.authenticatorService.getAllRoute();
-
-        return routelist.parallelStream().noneMatch(e -> {
+        return routes.parallelStream().noneMatch(e -> {
             String ePath = e.getPath();
-            return !e.isSecure() && requestMethod.equals(e.getMethod()) && Pattern.matches("^" + ePath, path);
+            return e.isSecure() && requestMethod.equals(e.getMethod()) && Pattern.matches("^" + ePath, path);
         });
     }
 
-    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) 
+    public Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) 
     {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
         return response.setComplete();
     }
 
-    private String getAuthHeader(ServerHttpRequest request) 
+    public String getAuthHeader(ServerHttpRequest request) 
     {
         List<String> headers = request.getHeaders().getOrEmpty("Authorization");
         if(headers.isEmpty())
@@ -153,12 +170,12 @@ public class AuthenticationFilter implements GatewayFilter
         return token;
     }
 
-    private boolean isAuthMissing(ServerHttpRequest request) 
+    public boolean isAuthMissing(ServerHttpRequest request) 
     {
         return !request.getHeaders().containsKey("Authorization");
     }
 
-    private void populateRequestWithHeaders(ServerWebExchange exchange, User user) 
+    public void populateRequestWithHeaders(ServerWebExchange exchange, User user) 
     {
         exchange.getRequest().mutate()
                 .header("user_id", user.getId() + "")

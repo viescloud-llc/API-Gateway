@@ -22,7 +22,8 @@ public class AuthenticatorService
 
     public User getUser(String jwt)
     {
-        User user;
+        User user = null;
+
         try
         {
             user = authenticatorClient.getUser(jwt);
@@ -32,7 +33,6 @@ public class AuthenticatorService
             int status = ex.status();
             if(status == 500 || status == 404 || status < 0)
                 HttpResponseThrowers.throwServerError("Server encounter unexpected problem");
-            return null;
         }
 
         return user;
