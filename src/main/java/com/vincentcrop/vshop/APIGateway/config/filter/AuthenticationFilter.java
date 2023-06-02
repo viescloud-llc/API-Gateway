@@ -60,6 +60,7 @@ public class AuthenticationFilter implements GatewayFilter
         }
         catch(Exception ex)
         {
+            ex.printStackTrace();
             Splunk.logError(ex);
             HttpResponseThrowers.throwServerError("server is experiencing some error");
         }
@@ -181,7 +182,7 @@ public class AuthenticationFilter implements GatewayFilter
 
         String bearer = headers.get(0);
 
-        if(!bearer.contains("Bearer") || !bearer.contains("bearer"))
+        if(!(bearer.contains("Bearer") || bearer.contains("bearer")))
             HttpResponseThrowers.throwBadRequest("Token is not bearer token");
 
         return bearer;
