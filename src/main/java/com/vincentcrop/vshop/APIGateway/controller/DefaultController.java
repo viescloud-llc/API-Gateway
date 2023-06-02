@@ -13,7 +13,6 @@ import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
 
 import feign.FeignException;
-import feign.FeignException.FeignClientException;
 
 @RestController
 public class DefaultController {
@@ -22,17 +21,17 @@ public class DefaultController {
     private AuthenticatorClient authenticatorClient;
 
     @Value("${spring.profiles.active}")
-	private String env = "?";
+    private String env = "?";
 
     @GetMapping("/_status/healthz")
-	public String healthCheck() {
-		return String.format("API Gateway %s is up and running", env);
-	}
+    public String healthCheck() {
+        return String.format("API Gateway %s is up and running", env);
+    }
 
     @GetMapping("/user")
-	public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
-		return authenticatorClient.getLoginUser(jwt);
-	}
+    public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
+        return authenticatorClient.getLoginUser(jwt);
+    }
 
     @GetMapping("/logout")
     public void logout(@RequestHeader("Authorization") String jwt) {
@@ -44,11 +43,9 @@ public class DefaultController {
         try {
             this.authenticatorClient.isLogin(jwt);
             return ResponseEntity.ok().build();
-        }
-        catch(FeignException.BadRequest ex){
+        } catch (FeignException.BadRequest ex) {
             return ResponseEntity.badRequest().build();
         }
-        
     }
 
     @PostMapping("/login")
