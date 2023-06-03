@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
+import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
 
 import feign.FeignException;
 
@@ -30,7 +32,13 @@ public class DefaultController {
 
     @GetMapping("/user")
     public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
-        return authenticatorClient.getLoginUser(jwt);
+        try {
+            var user = authenticatorClient.getLoginUser(jwt);
+            return user;
+        }
+        catch(FeignException ex) {
+            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+        }
     }
 
     @GetMapping("/logout")
