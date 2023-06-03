@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HttpExceptionResponse {
     private HttpStatus status;
-    private String detailMessageCode;
     private String message;
     private String reason;
     private String localizedMessage;
@@ -21,7 +20,5 @@ public class HttpExceptionResponse {
         this.status = new HttpStatus(ex.getStatusCode());
         this.reason = ex.getReason();
         this.localizedMessage = ex.getLocalizedMessage();
-        this.detailMessageCode = ex.getDetailMessageCode();
     }
-
 }
