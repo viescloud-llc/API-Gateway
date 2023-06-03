@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
-import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
 
 import feign.FeignException;
 
@@ -58,11 +57,23 @@ public class DefaultController {
 
     @PostMapping("/login")
     public Object login(@RequestBody User user) {
-        return this.authenticatorClient.login(user);
+        try {
+            var o = this.authenticatorClient.login(user);
+            return o;
+        }
+        catch(FeignException ex) {
+            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+        }
     }
 
     @PostMapping("/register")
     public Object register(@RequestBody User user) {
-        return this.authenticatorClient.register(user);
+        try {
+            var o = this.authenticatorClient.register(user);
+            return o;
+        }
+        catch(FeignException ex) {
+            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+        }
     }
 }
