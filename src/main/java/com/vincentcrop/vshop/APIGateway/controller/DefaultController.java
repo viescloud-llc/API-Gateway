@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
+import com.vincentcrop.vshop.APIGateway.util.Time;
 
 import feign.FeignException;
 
@@ -27,6 +28,11 @@ public class DefaultController {
     @GetMapping("/_status/healthz")
     public String healthCheck() {
         return String.format("API Gateway %s is up and running", env);
+    }
+
+    @GetMapping("/time/now")
+    public Time timeNow() {
+        return Time.now();
     }
 
     @GetMapping("/user")
