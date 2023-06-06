@@ -174,6 +174,6 @@ public class Time {
     }
 
     public String getTime() {
-        return String.format("%s-%s-%s", this.hours, this.minute, this.second);
+        return String.format("%s:%s:%s", this.hours, this.minute, this.second);
     }
 }
