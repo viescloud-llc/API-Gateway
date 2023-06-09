@@ -3,7 +3,9 @@ package com.vincentcrop.vshop.APIGateway.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +63,30 @@ public class UserController {
     public Object register(@RequestBody User user) {
         try {
             var o = this.authenticatorClient.register(user);
+            return o;
+        }
+        catch(FeignException ex) {
+            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+        }
+    }
+
+    @PutMapping("/user")
+    public Object modifyUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        try {
+            var loginUser = authenticatorClient.getLoginUserWithCast(jwt);
+            var o = this.authenticatorClient.updateUser(loginUser.getId(), user);
+            return o;
+        }
+        catch(FeignException ex) {
+            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+        }
+    }
+
+    @PatchMapping("/user")
+    public Object patchUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
+        try {
+            var loginUser = authenticatorClient.getLoginUserWithCast(jwt);
+            var o = this.authenticatorClient.patchUser(loginUser.getId(), user);
             return o;
         }
         catch(FeignException ex) {

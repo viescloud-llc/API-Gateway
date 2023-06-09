@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -48,4 +50,10 @@ public interface AuthenticatorClient
 
     @GetMapping("/auth")
     public Object isLogin(@RequestHeader("Authorization") String jwt);
+
+    @PutMapping("/users/{id}")
+    public Object updateUser(@PathVariable("id") int id, @RequestBody User user);
+
+    @PatchMapping("/users/{id}")
+    public Object patchUser(@PathVariable("id") int id, @RequestBody User user);
 }
