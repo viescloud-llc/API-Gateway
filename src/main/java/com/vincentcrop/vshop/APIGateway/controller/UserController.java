@@ -15,8 +15,10 @@ import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
 
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -29,6 +31,7 @@ public class UserController {
             return user;
         }
         catch(FeignException ex) {
+            log.error(ex.getMessage(), ex);
             throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
         }
     }
@@ -44,6 +47,7 @@ public class UserController {
             this.authenticatorClient.isLogin(jwt);
             return ResponseEntity.ok().build();
         } catch (FeignException.BadRequest ex) {
+            log.error(ex.getMessage(), ex);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -55,6 +59,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
+            log.error(ex.getMessage(), ex);
             throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
         }
     }
@@ -66,6 +71,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
+            log.error(ex.getMessage(), ex);
             throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
         }
     }
@@ -77,6 +83,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
+            log.error(ex.getMessage(), ex);
             throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
         }
     }
@@ -88,6 +95,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
+            log.error(ex.getMessage(), ex);
             throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
         }
     }
