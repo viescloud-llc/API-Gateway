@@ -51,9 +51,9 @@ public interface AuthenticatorClient
     @GetMapping("/auth")
     public Object isLogin(@RequestHeader("Authorization") String jwt);
 
-    @PutMapping("/auth/user")
+    @PutMapping(value = "/auth/user", consumes = "application/json", produces="application/json")
     public Object updateLoginUser(@RequestHeader("Authorization") String jwt, @RequestBody User user);
 
-    @PatchMapping("/auth/user")
+    @PatchMapping(value = "/auth/user", consumes = "application/json", produces="application/json")
     public Object patchLoginUser(@RequestHeader("Authorization") String jwt, @RequestBody User user);
 }
