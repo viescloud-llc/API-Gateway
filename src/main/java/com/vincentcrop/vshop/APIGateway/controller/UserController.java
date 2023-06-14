@@ -1,6 +1,9 @@
 package com.vincentcrop.vshop.APIGateway.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -9,7 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
@@ -22,8 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController {
 
+    private final String AUTHENTICATOR = "AUTHENTICATOR-SERVICE";
+
     @Autowired
     private AuthenticatorClient authenticatorClient;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("/user")
     public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
@@ -78,17 +87,6 @@ public class UserController {
     public Object modifyUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
         try {
             var o = this.authenticatorClient.updateLoginUser(jwt, user);
-            return o;
-        }
-        catch(FeignException ex) {
-            return HttpResponseThrowers.throwFeignException(ex);
-        }
-    }
-
-    @PatchMapping("/user")
-    public Object patchUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
-        try {
-            var o = this.authenticatorClient.patchLoginUser(jwt, user);
             return o;
         }
         catch(FeignException ex) {
