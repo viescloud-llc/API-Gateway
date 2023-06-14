@@ -73,8 +73,7 @@ public class UserController {
     @PutMapping("/user")
     public Object modifyUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
         try {
-            var loginUser = authenticatorClient.getLoginUserWithCast(jwt);
-            var o = this.authenticatorClient.updateUser(loginUser.getId(), user);
+            var o = this.authenticatorClient.updateLoginUser(jwt, user);
             return o;
         }
         catch(FeignException ex) {
@@ -85,8 +84,7 @@ public class UserController {
     @PatchMapping("/user")
     public Object patchUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
         try {
-            var loginUser = authenticatorClient.getLoginUserWithCast(jwt);
-            var o = this.authenticatorClient.patchUser(loginUser.getId(), user);
+            var o = this.authenticatorClient.patchLoginUser(jwt, user);
             return o;
         }
         catch(FeignException ex) {
