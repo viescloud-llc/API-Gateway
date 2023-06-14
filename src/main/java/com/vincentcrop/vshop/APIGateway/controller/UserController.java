@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
+import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,7 @@ public class UserController {
             return user;
         }
         catch(FeignException ex) {
-            log.error(ex.getMessage(), ex);
-            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+            return HttpResponseThrowers.throwFeignException(ex);
         }
     }
 
@@ -59,8 +59,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
-            log.error(ex.getMessage(), ex);
-            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+            return HttpResponseThrowers.throwFeignException(ex);
         }
     }
 
@@ -71,8 +70,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
-            log.error(ex.getMessage(), ex);
-            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+            return HttpResponseThrowers.throwFeignException(ex);
         }
     }
 
@@ -83,8 +81,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
-            log.error(ex.getMessage(), ex);
-            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+            return HttpResponseThrowers.throwFeignException(ex);
         }
     }
 
@@ -95,8 +92,7 @@ public class UserController {
             return o;
         }
         catch(FeignException ex) {
-            log.error(ex.getMessage(), ex);
-            throw new ResponseStatusException(ex.status(), ex.getMessage(), ex);
+            return HttpResponseThrowers.throwFeignException(ex);
         }
     }
 }
