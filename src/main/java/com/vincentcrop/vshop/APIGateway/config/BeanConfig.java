@@ -25,6 +25,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 
 import com.google.gson.Gson;
 
+import feign.okhttp.OkHttpClient;
+
 @Configuration
 public class BeanConfig 
 {
@@ -81,6 +83,11 @@ public class BeanConfig
     {
         return new Gson();
     }
+
+    @Bean
+    public OkHttpClient client() {
+        return new OkHttpClient();
+    } 
 
     @Bean
     public static RestTemplate restTemplate(@Value("${http.connection-timeout.ms}") int connectTimeout)
