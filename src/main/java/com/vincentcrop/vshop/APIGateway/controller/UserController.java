@@ -68,24 +68,4 @@ public class UserController {
             return HttpResponseThrowers.throwFeignException(ex);
         }
     }
-
-    @PutMapping("/user")
-    public Object modifyUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
-        try {
-            var o = this.authenticatorClient.updateLoginUser(jwt, user);
-            return o;
-        } catch (FeignException ex) {
-            return HttpResponseThrowers.throwFeignException(ex);
-        }
-    }
-
-    @PatchMapping("/user")
-    public Object patchUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) {
-        try {
-            var o = this.authenticatorClient.patchLoginUser(jwt, user);
-            return o;
-        } catch (FeignException ex) {
-            return HttpResponseThrowers.throwFeignException(ex);
-        }
-    }
 }
