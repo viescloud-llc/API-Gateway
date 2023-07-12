@@ -38,6 +38,11 @@ public class GatewayConfig
                 .path("/vgame/**")
 				.filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                 .uri("lb://VGAME-SERVICE"))
+            //------------------------FILE-MANAGER-SERVICE-------------------------------
+            .route("FILE-MANAGER-SERVICE", r -> r
+                .path("/file/**")
+				.filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                .uri("lb://FILE-MANAGER-SERVICE"))
             .build();
     }
 }
