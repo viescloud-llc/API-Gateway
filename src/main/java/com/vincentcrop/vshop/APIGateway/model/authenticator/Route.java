@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Route 
-{
+public class Route {
     private int id;
-    
+
     private String path;
 
     private String method;

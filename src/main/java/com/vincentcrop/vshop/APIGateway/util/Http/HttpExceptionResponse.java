@@ -31,7 +31,7 @@ public class HttpExceptionResponse {
     public HttpExceptionResponse(ResponseStatusException ex) {
         this.UUID = java.util.UUID.randomUUID().toString();
         this.time = Time.now().toSpring();
-        this. message = extractMessage(ex.getMessage());
+        this.message = extractMessage(ex.getMessage());
         this.status = new HttpStatus(ex.getStatusCode());
         this.reason = ex.getReason();
         this.localizedMessage = ex.getLocalizedMessage();
@@ -43,21 +43,21 @@ public class HttpExceptionResponse {
 
         var index = newMessage.indexOf(CUT_MESSAGE1);
 
-        if(index < 0)
+        if (index < 0)
             return originMessage;
 
         newMessage = newMessage.substring(index + CUT_MESSAGE1.length());
 
         index = newMessage.indexOf(CUT_MESSAGE2);
 
-        if(index < 0)
+        if (index < 0)
             return originMessage;
 
         newMessage = newMessage.substring(index + CUT_MESSAGE2.length());
 
         index = newMessage.indexOf(CUT_MESSAGE2);
-        
-        if(index < 0)
+
+        if (index < 0)
             return originMessage;
 
         newMessage = newMessage.substring(0, index);

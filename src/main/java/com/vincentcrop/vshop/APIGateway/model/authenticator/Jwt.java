@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Jwt 
-{
-    private String jwt; 
+public class Jwt {
+    private String jwt;
 }

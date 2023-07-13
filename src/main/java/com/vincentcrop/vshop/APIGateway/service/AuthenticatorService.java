@@ -15,53 +15,44 @@ import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
 import feign.FeignException;
 
 @Service
-public class AuthenticatorService 
-{
+public class AuthenticatorService {
     @Autowired
     private AuthenticatorClient authenticatorClient;
 
-    public User getUser(String jwt)
-    {
+    public User getUser(String jwt) {
         User user = null;
 
-        try
-        {
+        try {
             user = authenticatorClient.getLoginUserWithCast(jwt);
-        }
-        catch(FeignException ex)
-        {
+        } catch (FeignException ex) {
             int status = ex.status();
-            if(status == 500 || status == 404 || status < 0)
+            if (status == 500 || status == 404 || status < 0)
                 HttpResponseThrowers.throwServerError("Server encounter unexpected problem");
         }
 
         return user;
     }
 
-    public List<Route> getAllRoute()
-    {
-        try
-        {
+    public List<Route> getAllRoute() {
+        try {
             List<Route> list = this.authenticatorClient.getAllRoutes().getBody();
-            
-            if(ObjectUtils.isEmpty(list))
+
+            if (ObjectUtils.isEmpty(list))
                 list = new ArrayList<>();
 
             return list;
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             return new ArrayList<>();
         }
     }
-    
-    public boolean hasAnyAuthority(User user, List<String> roles)
-    {
-        return user.getUserRoles().parallelStream().anyMatch((ur) -> roles.parallelStream().anyMatch(r -> ur.getName().equals(r)));
+
+    public boolean hasAnyAuthority(User user, List<String> roles) {
+        return user.getUserRoles().parallelStream()
+                .anyMatch((ur) -> roles.parallelStream().anyMatch(r -> ur.getName().equals(r)));
     }
-    
-    public boolean hasAllAuthority(User user, List<String> roles)
-    {
-        return roles.stream().allMatch(r -> user.getUserRoles().parallelStream().anyMatch(ur -> ur.getName().equals(r)));
+
+    public boolean hasAllAuthority(User user, List<String> roles) {
+        return roles.stream()
+                .allMatch(r -> user.getUserRoles().parallelStream().anyMatch(ur -> ur.getName().equals(r)));
     }
 }

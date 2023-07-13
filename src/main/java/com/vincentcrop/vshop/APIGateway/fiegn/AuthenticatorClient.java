@@ -18,22 +18,23 @@ import feign.Headers;
 
 @FeignClient("AUTHENTICATOR-SERVICE")
 @Headers("Content-Type: application/json")
-public interface AuthenticatorClient
-{
-    @GetMapping(value = "/users", consumes = "application/json", produces="application/json")
+public interface AuthenticatorClient {
+    @GetMapping(value = "/users", consumes = "application/json", produces = "application/json")
     public Object getLoginUser(@RequestHeader(required = false, value = "Authorization") String jwt);
 
-    @GetMapping(value = "/users", consumes = "application/json", produces="application/json")
+    @GetMapping(value = "/users", consumes = "application/json", produces = "application/json")
     public User getLoginUserWithCast(@RequestHeader("Authorization") String jwt);
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getById(@PathVariable("id") int id);
-    
+
     @PostMapping("/auth/any_authority")
-    public ResponseEntity<String> hasAnyAuthority(@RequestHeader("Authorization") String jwt, @RequestBody List<String> roles);
+    public ResponseEntity<String> hasAnyAuthority(@RequestHeader("Authorization") String jwt,
+            @RequestBody List<String> roles);
 
     @PostMapping("/auth/all_authority")
-    public ResponseEntity<String> hasAllAuthority(@RequestHeader("Authorization") String jwt, @RequestBody List<String> roles);
+    public ResponseEntity<String> hasAllAuthority(@RequestHeader("Authorization") String jwt,
+            @RequestBody List<String> roles);
 
     @GetMapping("/routes")
     public ResponseEntity<List<Route>> getAllRoutes();
@@ -50,9 +51,9 @@ public interface AuthenticatorClient
     @GetMapping("/auth")
     public Object isLogin(@RequestHeader("Authorization") String jwt);
 
-    @PutMapping(value = "/auth/user", consumes = "application/json", produces="application/json")
+    @PutMapping(value = "/auth/user", consumes = "application/json", produces = "application/json")
     public Object updateLoginUser(@RequestHeader("Authorization") String jwt, @RequestBody User user);
 
-    @PutMapping(value = "/auth/patch/user", consumes = "application/json", produces="application/json")
+    @PutMapping(value = "/auth/patch/user", consumes = "application/json", produces = "application/json")
     public Object patchLoginUser(@RequestHeader("Authorization") String jwt, @RequestBody User user);
 }

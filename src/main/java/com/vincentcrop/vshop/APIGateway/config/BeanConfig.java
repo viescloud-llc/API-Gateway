@@ -26,8 +26,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import com.google.gson.Gson;
 
 @Configuration
-public class BeanConfig 
-{
+public class BeanConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
 
@@ -41,7 +40,7 @@ public class BeanConfig
         source.registerCorsConfiguration("/**", corsConfig);
 
         return new CorsWebFilter(source);
-    }  
+    }
 
     @Bean
     public WebFluxConfigurer corsConfigurer() {
@@ -71,32 +70,28 @@ public class BeanConfig
     }
 
     @Bean
-    public HttpMessageConverters messageConverter(ObjectProvider<HttpMessageConverter<?>> converter)
-    {
+    public HttpMessageConverters messageConverter(ObjectProvider<HttpMessageConverter<?>> converter) {
         return new HttpMessageConverters(converter.orderedStream().collect(Collectors.toList()));
-    }   
+    }
 
     @Bean
-    public Gson gson()
-    {
+    public Gson gson() {
         return new Gson();
     }
 
     @Bean
-    public static RestTemplate restTemplate(@Value("${http.connection-timeout.ms}") int connectTimeout)
-    {
+    public static RestTemplate restTemplate(@Value("${http.connection-timeout.ms}") int connectTimeout) {
         // RestTemplate restTemplate = restTemplateBuilder
-        //                 .setConnectTimeout(Duration.ofMillis(connectTimeout))
-        //                 .setReadTimeout(Duration.ofMillis(connectTimeout))
-        //                 .build();
-                        
+        // .setConnectTimeout(Duration.ofMillis(connectTimeout))
+        // .setReadTimeout(Duration.ofMillis(connectTimeout))
+        // .build();
+
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new RestTemplateErrorHandler());
         return restTemplate;
     }
 
-    private static class RestTemplateErrorHandler implements ResponseErrorHandler
-    {
+    private static class RestTemplateErrorHandler implements ResponseErrorHandler {
 
         @Override
         public boolean hasError(ClientHttpResponse response) throws IOException {
@@ -109,8 +104,7 @@ public class BeanConfig
 
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
-            for(int length; (length = inputStream.read(buffer)) != -1;)
-            {
+            for (int length; (length = inputStream.read(buffer)) != -1;) {
                 result.write(buffer, 0, length);
             }
 

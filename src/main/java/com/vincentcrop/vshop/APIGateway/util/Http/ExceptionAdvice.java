@@ -17,16 +17,16 @@ public class ExceptionAdvice {
     private String env = "?";
 
     private final String PROD = "prod";
-    
+
     @ExceptionHandler(value = ResponseStatusException.class)
     public ResponseEntity<HttpExceptionResponse> handleResponseStatus(ResponseStatusException ex) {
         var response = new HttpExceptionResponse(ex);
 
         log.error(ex.getMessage(), ex);
 
-        if(env.equals(PROD))
+        if (env.equals(PROD))
             response.mask();
-        
+
         return new ResponseEntity<HttpExceptionResponse>(response, null, response.getStatus().getValue());
     }
 
@@ -39,9 +39,9 @@ public class ExceptionAdvice {
 
         log.error(ex.getMessage(), ex);
 
-        if(env.equals(PROD))
+        if (env.equals(PROD))
             response.mask();
-        
+
         return new ResponseEntity<HttpExceptionResponse>(response, null, response.getStatus().getValue());
     }
 }
