@@ -15,54 +15,53 @@ import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@Slf4j
 public class UserController {
-    @Autowired
-    private AuthenticatorClient authenticatorClient;
+    // @Autowired
+    // private AuthenticatorClient authenticatorClient;
 
-    @GetMapping("/user")
-    public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
-        try {
-            var user = authenticatorClient.getLoginUser(jwt);
-            return user;
-        } catch (FeignException ex) {
-            return HttpResponseThrowers.throwFeignException(ex);
-        }
-    }
+    // @GetMapping("/user")
+    // public Object getLoginUser(@RequestHeader("Authorization") String jwt) {
+    //     try {
+    //         var user = authenticatorClient.getLoginUser(jwt);
+    //         return user;
+    //     } catch (FeignException ex) {
+    //         return HttpResponseThrowers.throwFeignException(ex);
+    //     }
+    // }
 
-    @GetMapping("/logout")
-    public void logout(@RequestHeader("Authorization") String jwt) {
-        this.authenticatorClient.logout(jwt);
-    }
+    // @GetMapping("/logout")
+    // public void logout(@RequestHeader("Authorization") String jwt) {
+    //     this.authenticatorClient.logout(jwt);
+    // }
 
-    @GetMapping("/auth")
-    public ResponseEntity<?> isLogin(@RequestHeader("Authorization") String jwt) {
-        try {
-            this.authenticatorClient.isLogin(jwt);
-            return ResponseEntity.ok().build();
-        } catch (FeignException.BadRequest ex) {
-            log.error(ex.getMessage(), ex);
-            return ResponseEntity.badRequest().build();
-        }
-    }
+    // @GetMapping("/auth")
+    // public ResponseEntity<?> isLogin(@RequestHeader("Authorization") String jwt) {
+    //     try {
+    //         this.authenticatorClient.isLogin(jwt);
+    //         return ResponseEntity.ok().build();
+    //     } catch (FeignException.BadRequest ex) {
+    //         log.error(ex.getMessage(), ex);
+    //         return ResponseEntity.badRequest().build();
+    //     }
+    // }
 
-    @PostMapping("/login")
-    public Object login(@RequestBody User user) {
-        try {
-            var o = this.authenticatorClient.login(user);
-            return o;
-        } catch (FeignException ex) {
-            return HttpResponseThrowers.throwFeignException(ex);
-        }
-    }
+    // @PostMapping("/login")
+    // public Object login(@RequestBody User user) {
+    //     try {
+    //         var o = this.authenticatorClient.login(user);
+    //         return o;
+    //     } catch (FeignException ex) {
+    //         return HttpResponseThrowers.throwFeignException(ex);
+    //     }
+    // }
 
-    @PostMapping("/register")
-    public Object register(@RequestBody User user) {
-        try {
-            var o = this.authenticatorClient.register(user);
-            return o;
-        } catch (FeignException ex) {
-            return HttpResponseThrowers.throwFeignException(ex);
-        }
-    }
+    // @PostMapping("/register")
+    // public Object register(@RequestBody User user) {
+    //     try {
+    //         var o = this.authenticatorClient.register(user);
+    //         return o;
+    //     } catch (FeignException ex) {
+    //         return HttpResponseThrowers.throwFeignException(ex);
+    //     }
+    // }
 }

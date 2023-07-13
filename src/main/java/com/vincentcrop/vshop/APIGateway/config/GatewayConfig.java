@@ -7,11 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilter;
+import com.vincentcrop.vshop.APIGateway.config.filter.DefaultEndpointFilter;
 
 @Configuration
 public class GatewayConfig {
     @Autowired
     private AuthenticationFilter authenticationFilter;
+
+    @Autowired
+    private DefaultEndpointFilter defaultEndpointFilter;
 
     @Bean
     public RouteLocator gatewayRouter(RouteLocatorBuilder builder) {
@@ -41,6 +45,27 @@ public class GatewayConfig {
                         .path("/file/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://FILE-MANAGER-SERVICE"))
+                // ------------------------DEFAULT-USER-SERVICE-------------------------------
+                .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/user")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
+                .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/auth")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
+                .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/login")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
+                .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/register")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
+                .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/logout")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
                 .build();
     }
 }
