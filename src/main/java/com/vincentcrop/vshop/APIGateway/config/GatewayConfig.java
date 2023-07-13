@@ -66,6 +66,10 @@ public class GatewayConfig {
                         .path("/logout")
                         .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
                         .uri("lb://AUTHENTICATOR-SERVICE"))
+                .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/setting/data")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(2))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
                 .build();
     }
 }

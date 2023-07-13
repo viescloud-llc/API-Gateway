@@ -39,6 +39,9 @@ public class DefaultEndpointFilter implements GatewayFilter {
                         case "/logout":
                             newPath = String.format("%s%s", newPath, "/auth/logout");
                             break;
+                        case "/setting/data":
+                            newPath = String.format("%s%s", newPath, "/userSettings");
+                            break;
                         default:
                             HttpResponseThrowers.throwNotFound("No Path found");
                     }
@@ -59,6 +62,9 @@ public class DefaultEndpointFilter implements GatewayFilter {
                     switch(path) {
                         case "/user":
                             newPath = String.format("%s%s", newPath, "/auth/user");
+                            break;
+                        case "/setting/data":
+                            newPath = String.format("%s%s", newPath, "/userSettings");
                             break;
                         default:
                             HttpResponseThrowers.throwNotFound("No Path found");
