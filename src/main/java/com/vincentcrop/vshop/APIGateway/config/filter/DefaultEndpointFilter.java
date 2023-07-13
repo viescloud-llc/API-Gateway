@@ -22,7 +22,7 @@ public class DefaultEndpointFilter implements GatewayFilter {
         try {
             ServerHttpRequest request = exchange.getRequest();
 
-            String requestMethod = request.getMethod().name();
+            String requestMethod = request.getMethod().name().toUpperCase();
             String path = request.getURI().getPath();
             String newPath = path;
 
@@ -56,7 +56,7 @@ public class DefaultEndpointFilter implements GatewayFilter {
                     break;
                 case "PUT":
                     switch(path) {
-                        case "user":
+                        case "/user":
                             newPath = String.format("%s%s", newPath, "/auth/user");
                             break;
                         default:
@@ -65,7 +65,7 @@ public class DefaultEndpointFilter implements GatewayFilter {
                     break;
                 case "PATCH":
                     switch(path) {
-                        case "user":
+                        case "/user":
                             newPath = String.format("%s%s", newPath, "/auth/user");
                             break;
                         default:
