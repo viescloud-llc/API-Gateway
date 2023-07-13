@@ -80,27 +80,27 @@ public class Time {
     }
 
     public boolean isBefore(Time time) {
-        if(this.toLocalDate().isBefore(time.toLocalDate()))
+        if (this.toLocalDate().isBefore(time.toLocalDate()))
             return true;
 
-        if(this.toLocalTime().isBefore(time.toLocalTime()))
+        if (this.toLocalTime().isBefore(time.toLocalTime()))
             return true;
 
         return false;
     }
 
     public boolean isAfter(Time time) {
-        if(this.toLocalDate().isAfter(time.toLocalDate()))
+        if (this.toLocalDate().isAfter(time.toLocalDate()))
             return true;
 
-        if(this.toLocalTime().isAfter(time.toLocalTime()))
+        if (this.toLocalTime().isAfter(time.toLocalTime()))
             return true;
 
         return false;
     }
 
     public int getMaxDay(int month) {
-        switch(month) {
+        switch (month) {
             case 2:
                 return 28;
             case 4:
@@ -124,7 +124,7 @@ public class Time {
 
     public Time increaseMonth(int month) {
         this.month += month;
-        if(!this.bypassMax && this.month > MAX_MONTH) {
+        if (!this.bypassMax && this.month > MAX_MONTH) {
             this.increaseYear(this.month / MAX_MONTH);
             this.month = this.month % MAX_MONTH;
         }
@@ -134,7 +134,7 @@ public class Time {
     public Time increaseDay(int day) {
         this.day += day;
         int MAX_DAY = this.getMaxDay();
-        if(!this.bypassMax && this.day > MAX_DAY) {
+        if (!this.bypassMax && this.day > MAX_DAY) {
             this.increaseMonth(this.day / MAX_DAY);
             this.day = this.day % this.getMaxDay(this.month);
         }
@@ -143,7 +143,7 @@ public class Time {
 
     public Time increaseHours(int hours) {
         this.hours += hours;
-        if(!this.bypassMax && this.hours >= MAX_HOURS) {
+        if (!this.bypassMax && this.hours >= MAX_HOURS) {
             this.increaseDay(this.hours / MAX_HOURS);
             this.hours = this.hours % MAX_HOURS;
         }
@@ -152,7 +152,7 @@ public class Time {
 
     public Time increaseMinute(int minute) {
         this.minute += minute;
-        if(!this.bypassMax && this.minute >= MAX_MINUTE) {
+        if (!this.bypassMax && this.minute >= MAX_MINUTE) {
             this.increaseHours(this.minute / MAX_MINUTE);
             this.minute = this.minute % MAX_MINUTE;
         }
@@ -161,7 +161,7 @@ public class Time {
 
     public Time increaseSecond(int second) {
         this.second += second;
-        if(!this.bypassMax && this.second >= MAX_SECOND) {
+        if (!this.bypassMax && this.second >= MAX_SECOND) {
             this.increaseMinute(this.second / MAX_SECOND);
             this.second = this.second % MAX_SECOND;
         }
@@ -195,7 +195,7 @@ public class Time {
         double monthToDay = (yearToMonth * 30) + this.day;
         double dayToHours = (monthToDay * 24) + this.hours;
         double hoursToMinutes = (dayToHours * 60) + this.minute;
-        double secondToMinutes = (double)this.second / 60;
+        double secondToMinutes = (double) this.second / 60;
         return hoursToMinutes + secondToMinutes;
     }
 

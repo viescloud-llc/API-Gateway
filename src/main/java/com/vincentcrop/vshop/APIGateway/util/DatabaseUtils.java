@@ -126,7 +126,7 @@ public class DatabaseUtils<V, K> {
         try {
             var id = ReflectionUtils.getIdFieldValue(value);
             var saveValue = this.save(value);
-            
+
             if (ObjectUtils.isEmpty(id))
                 return null;
 
