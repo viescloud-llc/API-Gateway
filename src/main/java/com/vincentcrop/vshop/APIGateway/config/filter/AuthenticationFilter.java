@@ -22,12 +22,13 @@ import com.vincentcrop.vshop.APIGateway.model.authenticator.Route;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
 import com.vincentcrop.vshop.APIGateway.service.AuthenticatorService;
 import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
-import com.vincentcrop.vshop.APIGateway.util.splunk.Splunk;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @RefreshScope
 @Component
+@Slf4j
 public class AuthenticationFilter implements GatewayFilter {
     private final String DEFAULT_ROLE_OWNER = "OWNER";
     private final String DEFAULT_ROLE_CO_OWNER = "CO-OWNER";
@@ -59,7 +60,7 @@ public class AuthenticationFilter implements GatewayFilter {
         } catch (ResponseStatusException ex) {
             throw ex;
         } catch (Exception ex) {
-            Splunk.logError(ex);
+            log.error(ex.getMessage(), ex);
             HttpResponseThrowers.throwServerError("server is experiencing some error");
         }
 

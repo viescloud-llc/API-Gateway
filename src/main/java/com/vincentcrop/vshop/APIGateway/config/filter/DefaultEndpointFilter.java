@@ -9,12 +9,13 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.vincentcrop.vshop.APIGateway.util.Http.HttpResponseThrowers;
-import com.vincentcrop.vshop.APIGateway.util.splunk.Splunk;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @RefreshScope
 @Component
+@Slf4j
 public class DefaultEndpointFilter implements GatewayFilter {
 
     @Override
@@ -82,7 +83,7 @@ public class DefaultEndpointFilter implements GatewayFilter {
         } catch (ResponseStatusException ex) {
             throw ex;
         } catch (Exception ex) {
-            Splunk.logError(ex);
+            log.error(ex.getMessage(), ex);
             HttpResponseThrowers.throwServerError("server is experiencing some error");
         }
 
