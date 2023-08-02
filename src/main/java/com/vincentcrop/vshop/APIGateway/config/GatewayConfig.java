@@ -20,11 +20,6 @@ public class GatewayConfig {
     @Bean
     public RouteLocator gatewayRouter(RouteLocatorBuilder builder) {
         return builder.routes()
-                // -----------------------------TESTING---------------------------------------
-                .route(r -> r
-                        .path("/get")
-                        .filters(f -> f.addRequestHeader("Hello", "World"))
-                        .uri("http://httpbin.org:80"))
                 // ------------------------AUTHENTICATOR-SERVICE------------------------------
                 .route("AUTHENTICATOR-SERVICE", r -> r
                         .path("/authenticator/**")
@@ -45,6 +40,11 @@ public class GatewayConfig {
                         .path("/file/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://FILE-MANAGER-SERVICE"))
+                // ------------------------SATURDAY-SERVICE-------------------------------
+                .route("SATURDAY-SERVICE", r -> r
+                        .path("/saturday/**")
+                        .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                        .uri("lb://SATURDAY-SERVICE"))
                 // ------------------------DEFAULT-USER-SERVICE-------------------------------
                 .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/user")
