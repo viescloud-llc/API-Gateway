@@ -45,6 +45,11 @@ public class GatewayConfig {
                         .path("/saturday/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://SATURDAY-SERVICE"))
+                // ------------------------VENKINS-SERVICE-------------------------------
+                .route("SATURDAY-SERVICE", r -> r
+                        .path("/venkins/**")
+                        .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                        .uri("lb://VENKINS-SERVICE"))
                 // ------------------------DEFAULT-USER-SERVICE-------------------------------
                 .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/user")
