@@ -11,7 +11,7 @@ spec:
   - 10.24.24.101
   ports:
   - name: http
-    port: 81 #local out port
+    port: 80 #local out port
     protocol: TCP
     targetPort: 81 # container port
   selector:
