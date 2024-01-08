@@ -177,10 +177,27 @@ public class AuthenticationFilter implements GatewayFilter {
 
     public static String getBearerJwt(ServerHttpRequest request) {
         List<String> headers = request.getHeaders().getOrEmpty("Authorization");
-        if (headers.isEmpty())
-            return null;
+        if(headers.isEmpty())
+            headers = request.getHeaders().getOrEmpty("authorization");
 
-        String bearer = headers.get(0);
+        var params = request.getQueryParams();
+
+        if (headers.isEmpty() && !params.containsKey("authorization") && !params.containsKey("Authorization"))
+            return null;
+            
+        String bearer = null;
+
+        if(!headers.isEmpty())
+            bearer = headers.get(0);
+
+        //get jwt from query
+        if(ObjectUtils.isEmpty(bearer)) {
+            if(params.containsKey("authorization"))
+                bearer = params.get("authorization").get(0);
+            else
+                bearer = params.get("Authorization").get(0);
+            return bearer;
+        }
 
         if (!(bearer.contains("Bearer") || bearer.contains("bearer")))
             HttpResponseThrowers.throwBadRequest("Token is not bearer token");
