@@ -50,11 +50,11 @@ public class GatewayConfig {
                         .path("/venkins/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://VENKINS-SERVICE"))
-                // ------------------------AI-READER-SERVICE-------------------------------
-                .route("AI-READER-SERVICE", r -> r
-                        .path("/ai/reader/**")
-                        .filters(f -> f.filter(authenticationFilter).stripPrefix(2))
-                        .uri("http://10.24.24.112:8080"))
+                // ------------------------RAPHAEL-SERVICE-------------------------------
+                .route("RAPHAEL-SERVICE", r -> r
+                        .path("/raphael/**")
+                        .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                        .uri("lb://RAPHAEL-SERVICE"))
                 // ------------------------DEFAULT-USER-SERVICE-------------------------------
                 .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/user")
