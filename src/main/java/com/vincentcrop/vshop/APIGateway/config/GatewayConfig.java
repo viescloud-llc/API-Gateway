@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilter;
 import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilterBypass;
 import com.vincentcrop.vshop.APIGateway.config.filter.DefaultEndpointFilter;
-import com.vincentcrop.vshop.APIGateway.config.filter.RewriteFn;
 
 @Configuration
 public class GatewayConfig {

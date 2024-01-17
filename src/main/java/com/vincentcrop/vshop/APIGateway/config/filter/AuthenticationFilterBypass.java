@@ -4,7 +4,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -27,9 +26,8 @@ public class AuthenticationFilterBypass extends AuthenticationFilter {
             final String token = getBearerJwt(request);
             User user = this.authenticatorService.getUser(token);
 
-            if (!ObjectUtils.isEmpty(user))
-                this.populateRequestWithHeaders(exchange, user);
-                
+            this.populateRequestWithHeaders(exchange, user);
+            return chain.filter(exchange);
         } catch (ResponseStatusException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -37,6 +35,7 @@ public class AuthenticationFilterBypass extends AuthenticationFilter {
             HttpResponseThrowers.throwServerError("server is experiencing some error");
         }
 
+        this.populateRequestWithHeaders(exchange, null);
         return chain.filter(exchange);
     }
 }

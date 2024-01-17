@@ -38,6 +38,7 @@ public class AuthenticationFilter implements GatewayFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    
         try {
             ServerHttpRequest request = exchange.getRequest();
 
@@ -55,15 +56,16 @@ public class AuthenticationFilter implements GatewayFilter {
                 return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
             }
 
-            if (!ObjectUtils.isEmpty(user))
-                this.populateRequestWithHeaders(exchange, user);
+            this.populateRequestWithHeaders(exchange, user);
+            return chain.filter(exchange);
         } catch (ResponseStatusException ex) {
             throw ex;
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             HttpResponseThrowers.throwServerError("server is experiencing some error");
         }
-
+        
+        this.populateRequestWithHeaders(exchange, null);
         return chain.filter(exchange);
     }
 
@@ -219,8 +221,12 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     public void populateRequestWithHeaders(ServerWebExchange exchange, User user) {
+        String id = "";
+        if(!ObjectUtils.isEmpty(user))
+            id = user.getId() + "";
+
         exchange.getRequest().mutate()
-                .header("user_id", user.getId() + "")
+                .header("user_id", id)
                 .build();
     }
 }
