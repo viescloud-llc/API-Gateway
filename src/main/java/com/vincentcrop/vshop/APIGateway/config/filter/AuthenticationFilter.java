@@ -30,11 +30,11 @@ import reactor.core.publisher.Mono;
 @Component
 @Slf4j
 public class AuthenticationFilter implements GatewayFilter {
-    private final String DEFAULT_ROLE_OWNER = "OWNER";
-    private final String DEFAULT_ROLE_CO_OWNER = "CO-OWNER";
+    protected final String DEFAULT_ROLE_OWNER = "OWNER";
+    protected final String DEFAULT_ROLE_CO_OWNER = "CO-OWNER";
 
     @Autowired
-    private AuthenticatorService authenticatorService;
+    protected AuthenticatorService authenticatorService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

@@ -7,12 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilter;
+import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilterBypass;
 import com.vincentcrop.vshop.APIGateway.config.filter.DefaultEndpointFilter;
+import com.vincentcrop.vshop.APIGateway.config.filter.RewriteFn;
 
 @Configuration
 public class GatewayConfig {
     @Autowired
     private AuthenticationFilter authenticationFilter;
+
+    @Autowired
+    private AuthenticationFilterBypass authenticationFilterBypass;
 
     @Autowired
     private DefaultEndpointFilter defaultEndpointFilter;
@@ -40,6 +45,11 @@ public class GatewayConfig {
                         .path("/file/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://FILE-MANAGER-SERVICE"))
+                // ------------------------SMB-FILE-MANAGER-SERVICE-------------------------------
+                .route("SMB-FILE-MANAGER-SERVICE", r -> r
+                        .path("/smb/**")
+                        .filters(f -> f.filter(authenticationFilterBypass).stripPrefix(1))
+                        .uri("lb://SMB-FILE-MANAGER-SERVICE"))
                 // ------------------------SATURDAY-SERVICE-------------------------------
                 .route("SATURDAY-SERVICE", r -> r
                         .path("/saturday/**")
