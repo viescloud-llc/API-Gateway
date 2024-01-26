@@ -55,7 +55,7 @@ public class GatewayConfig {
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://SATURDAY-SERVICE"))
                 // ------------------------VENKINS-SERVICE-------------------------------
-                .route("SATURDAY-SERVICE", r -> r
+                .route("VENKINS-SERVICE", r -> r
                         .path("/venkins/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://VENKINS-SERVICE"))
@@ -64,6 +64,11 @@ public class GatewayConfig {
                         .path("/raphael/**")
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://RAPHAEL-SERVICE"))
+                // ------------------------AFFILIATE-MARKETING-SERVICE-------------------------------
+                .route("AFFILIATE-MARKETING-SERVICE", r -> r
+                        .path("/affiliate_marketing/**")
+                        .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                        .uri("lb://AFFILIATE-MARKETING-SERVICE"))
                 // ------------------------DEFAULT-USER-SERVICE-------------------------------
                 .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/user")
