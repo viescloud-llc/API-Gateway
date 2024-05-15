@@ -83,6 +83,10 @@ public class GatewayConfig {
                         .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
                         .uri("lb://AUTHENTICATOR-SERVICE"))
                 .route("DEFAULT-USER-SERVICE", r -> r
+                        .path("/openId")
+                        .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
+                        .uri("lb://AUTHENTICATOR-SERVICE"))
+                .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/register")
                         .filters(f -> f.filter(defaultEndpointFilter).stripPrefix(1))
                         .uri("lb://AUTHENTICATOR-SERVICE"))

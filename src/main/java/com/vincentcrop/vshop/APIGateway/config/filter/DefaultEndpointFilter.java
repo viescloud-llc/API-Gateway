@@ -51,6 +51,9 @@ public class DefaultEndpointFilter implements GatewayFilter {
                         case "/login":
                             newPath = String.format("%s%s", newPath, "/auth/login");
                             break;
+                        case "/openId":
+                            newPath = String.format("%s%s", newPath, "/auth/openId");
+                            break;
                         case "/register":
                             newPath = String.format("%s%s", newPath, "/users");
                             break;
