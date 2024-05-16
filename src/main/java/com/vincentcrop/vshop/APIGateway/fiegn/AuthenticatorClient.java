@@ -11,14 +11,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.vincentcrop.vshop.APIGateway.model.ServiceEnum.ServiceEnumConstant;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.Route;
 import com.vincentcrop.vshop.APIGateway.model.authenticator.User;
 
 import feign.Headers;
 
-@FeignClient("AUTHENTICATOR-SERVICE")
+@FeignClient(ServiceEnumConstant.AUTHENTICATOR_SERVICE)
 @Headers("Content-Type: application/json")
 public interface AuthenticatorClient {
+
+    @GetMapping(value = "/v3/api-docs", consumes = "application/json", produces = "application/json")
+    public Object getSwaggerDocs();
+
     @GetMapping(value = "/users", consumes = "application/json", produces = "application/json")
     public Object getLoginUser(@RequestHeader(required = false, value = "Authorization") String jwt);
 
