@@ -3,6 +3,8 @@ package com.vincentcrop.vshop.APIGateway.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -55,14 +57,14 @@ public class SwaggerService {
 
     public Object getAllDocs() {
         List<SwaggerApi> swaggerApis = new ArrayList<>();
-        swaggerApis.add(populatePaths(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), ServicePrefixEnum.AFFILIATE_MARKETING_SERVICE.getPrefix(), affiliateMarketingClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), ServicePrefixEnum.AUTHENTICATOR_SERVICE.getPrefix(), authenticatorClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.FILE_MANAGER_SERVICE.getPrefix(), fileManagerClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.RAPHAEL_SERVICE.getName(), ServicePrefixEnum.RAPHAEL_SERVICE.getPrefix(), raphaelClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.SATURDAY_SERVICE.getName(), ServicePrefixEnum.SATURDAY_SERVICE.getPrefix(), saturdayClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.SMB_FILE_MANAGER_SERVICE.getPrefix(), smbFileManagerClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServicePrefixEnum.VENKINS_SERVICE.getPrefix(), venkinsClient.getSwaggerDocs()));
-        swaggerApis.add(populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServicePrefixEnum.VGAME_SERVICE.getPrefix(), vGameClient.getSwaggerDocs()));
+        doTry(() -> affiliateMarketingClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), ServicePrefixEnum.AFFILIATE_MARKETING_SERVICE.getPrefix(), s)));
+        doTry(() -> authenticatorClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), ServicePrefixEnum.AUTHENTICATOR_SERVICE.getPrefix(), s)));
+        doTry(() -> fileManagerClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.FILE_MANAGER_SERVICE.getPrefix(), s)));
+        doTry(() -> raphaelClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.RAPHAEL_SERVICE.getName(), ServicePrefixEnum.RAPHAEL_SERVICE.getPrefix(), s)));
+        doTry(() -> saturdayClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.SATURDAY_SERVICE.getName(), ServicePrefixEnum.SATURDAY_SERVICE.getPrefix(), s)));
+        doTry(() -> smbFileManagerClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.SMB_FILE_MANAGER_SERVICE.getPrefix(), s)));
+        doTry(() -> venkinsClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServicePrefixEnum.VENKINS_SERVICE.getPrefix(), s)));
+        doTry(() -> vGameClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServicePrefixEnum.VGAME_SERVICE.getPrefix(), s)));
         
         return swaggerApis;
     }
@@ -103,8 +105,17 @@ public class SwaggerService {
         return path;
     }
 
-    private static <T> void isEmpty(T object, Consumer<T> supplier) {
+    private static <T> void isEmpty(T object, Consumer<T> consumer) {
         if(!ObjectUtils.isEmpty(object))
-            supplier.accept(object);
+            consumer.accept(object);
+    }
+
+    private static <T> void doTry(Supplier<T> suppier, Consumer<T> consumer) {
+        try {
+            consumer.accept(suppier.get());
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
