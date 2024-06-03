@@ -19,7 +19,12 @@ public class DefaultController {
     private String env = "?";
 
     @GetMapping("/_status/healthz")
-    public String healthCheck() {
+    public String healthCheck1() {
+        return String.format("API Gateway %s is up and running", env);
+    }
+
+    @GetMapping("/healthCheck")
+    public String healthCheck2() {
         return String.format("API Gateway %s is up and running", env);
     }
 
