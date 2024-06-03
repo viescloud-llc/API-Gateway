@@ -7,10 +7,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.util.pattern.PathPatternParser;
+import org.springframework.web.reactive.config.CorsRegistry;
 
 @Configuration
-public class WebFluxCorsConfig {
+public class WebFluxCorsConfig implements WebFluxConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*");
+    }
+    
     @Bean
     public CorsWebFilter corsWebFilter() {
         org.springframework.web.cors.CorsConfiguration corsConfig = new org.springframework.web.cors.CorsConfiguration();
