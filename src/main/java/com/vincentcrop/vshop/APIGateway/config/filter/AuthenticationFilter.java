@@ -50,10 +50,9 @@ public class AuthenticationFilter implements GatewayFilter {
 
             if (!isValidRoute(path, requestMethod, user)) {
                 if (this.isAuthMissing(request))
-                    return this.onError(exchange, "Authorization header is missing in request",
-                            HttpStatus.UNAUTHORIZED);
+                    return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
 
-                return this.onError(exchange, "Unauthorized", HttpStatus.UNAUTHORIZED);
+                return this.onError(exchange, "Unauthorized", HttpStatus.FORBIDDEN);
             }
 
             this.populateRequestWithHeaders(exchange, user);
