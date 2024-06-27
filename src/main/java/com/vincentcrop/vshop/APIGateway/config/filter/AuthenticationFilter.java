@@ -52,7 +52,7 @@ public class AuthenticationFilter implements GatewayFilter {
                 if (this.isAuthMissing(request))
                     return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
 
-                return this.onError(exchange, "Unauthorized", HttpStatus.FORBIDDEN);
+                return this.onError(exchange, "Forbidden", HttpStatus.FORBIDDEN);
             }
 
             this.populateRequestWithHeaders(exchange, user);
