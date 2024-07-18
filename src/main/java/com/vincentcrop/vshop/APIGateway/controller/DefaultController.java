@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +47,6 @@ public class DefaultController {
     @GetMapping("/favicon.ico")
     public ResponseEntity<Resource> getFavicon() throws IOException {
         Resource resource = new ClassPathResource("static/favicon.ico");
-        return ResponseEntity.ok().contentLength(resource.contentLength()).body(resource);
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/x-icon")).contentLength(resource.contentLength()).body(resource);
     }
 }
