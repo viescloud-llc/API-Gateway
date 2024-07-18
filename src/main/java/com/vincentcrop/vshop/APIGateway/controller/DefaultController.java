@@ -47,6 +47,6 @@ public class DefaultController {
     @GetMapping("/favicon.ico")
     public ResponseEntity<Resource> getFavicon() throws IOException {
         Resource resource = new ClassPathResource("static/favicon.ico");
-        return ResponseEntity.ok().contentType(MediaType.valueOf("image/x-icon")).contentLength(resource.contentLength()).body(resource);
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/vnd.microsoft.icon")).contentLength(resource.contentLength()).body(resource);
     }
 }
