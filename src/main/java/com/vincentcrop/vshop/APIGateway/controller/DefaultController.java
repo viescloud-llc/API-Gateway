@@ -37,4 +37,9 @@ public class DefaultController {
     public Object getMethodName() {
         return swaggerService.getAllEndpointSumary();
     }
+
+    @GetMapping("/postman/collection")
+    public Object getPostmanCollection() {
+        return swaggerService.getPostmanCollection();
+    }
 }
