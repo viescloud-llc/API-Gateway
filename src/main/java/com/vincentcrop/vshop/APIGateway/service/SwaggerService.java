@@ -2,6 +2,7 @@ package com.vincentcrop.vshop.APIGateway.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.vincent.inc.viesspringutils.util.DateTime;
 import com.vincentcrop.vshop.APIGateway.fiegn.AffiliateMarketingClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.FileManagerClient;
@@ -24,7 +28,10 @@ import com.vincentcrop.vshop.APIGateway.model.SwaggerApi;
 import com.vincentcrop.vshop.APIGateway.model.SwaggerMethod;
 import com.vincentcrop.vshop.APIGateway.model.SwaggerPath;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 
 @Service
@@ -55,24 +62,116 @@ public class SwaggerService {
     @Autowired
     private VGameClient vGameClient;
 
-    public Object getAllDocs() {
-        List<SwaggerApi> swaggerApis = new ArrayList<>();
-        doTry(() -> affiliateMarketingClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), ServicePrefixEnum.AFFILIATE_MARKETING_SERVICE.getPrefix(), s)));
-        doTry(() -> authenticatorClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), ServicePrefixEnum.AUTHENTICATOR_SERVICE.getPrefix(), s)));
-        doTry(() -> fileManagerClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.FILE_MANAGER_SERVICE.getPrefix(), s)));
-        doTry(() -> raphaelClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.RAPHAEL_SERVICE.getName(), ServicePrefixEnum.RAPHAEL_SERVICE.getPrefix(), s)));
-        doTry(() -> saturdayClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.SATURDAY_SERVICE.getName(), ServicePrefixEnum.SATURDAY_SERVICE.getPrefix(), s)));
-        doTry(() -> smbFileManagerClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.SMB_FILE_MANAGER_SERVICE.getPrefix(), s)));
-        doTry(() -> venkinsClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServicePrefixEnum.VENKINS_SERVICE.getPrefix(), s)));
-        doTry(() -> vGameClient.getSwaggerDocs(), s -> swaggerApis.add(populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServicePrefixEnum.VGAME_SERVICE.getPrefix(), s)));
-        
-        return swaggerApis;
+    private List<SwaggerApi> swaggerApisCache;
+    private JsonArray postmanApisCache;
+
+    private DateTime lastFetchTime;
+    private final int FETCH_INTERVAL = 60; // 60 seconds
+
+    public Object getAllEndpointSumary() {
+        populateDocs();
+        return swaggerApisCache;
     }
 
-    private SwaggerApi populatePaths(String serviceName, String prefix, Object SwaggerDoc) {
+    public String getPostmanCollection() {
+        populateDocs();
+        JsonObject rootObject = new JsonObject();
+        rootObject.add("collections", postmanApisCache);
+        return gson.toJson(rootObject);
+    }
+
+    private synchronized void populateDocs() {
+        if(this.isFetchTime()) {
+            initCache();
+            doTry(() -> affiliateMarketingClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), ServicePrefixEnum.AFFILIATE_MARKETING_SERVICE.getPrefix(), s));
+            doTry(() -> authenticatorClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), ServicePrefixEnum.AUTHENTICATOR_SERVICE.getPrefix(), s));
+            doTry(() -> fileManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.FILE_MANAGER_SERVICE.getPrefix(), s));
+            doTry(() -> raphaelClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.RAPHAEL_SERVICE.getName(), ServicePrefixEnum.RAPHAEL_SERVICE.getPrefix(), s));
+            doTry(() -> saturdayClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.SATURDAY_SERVICE.getName(), ServicePrefixEnum.SATURDAY_SERVICE.getPrefix(), s));
+            doTry(() -> smbFileManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.SMB_FILE_MANAGER_SERVICE.getPrefix(), s));
+            doTry(() -> venkinsClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServicePrefixEnum.VENKINS_SERVICE.getPrefix(), s));
+            doTry(() -> vGameClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServicePrefixEnum.VGAME_SERVICE.getPrefix(), s));
+        }
+    }
+
+    private boolean isFetchTime() {
+        if(this.lastFetchTime == null) {
+            this.lastFetchTime = DateTime.now();
+            return true;
+        }
+
+        var now = DateTime.now();
+        var temp = DateTime.of(this.lastFetchTime.toLocalDateTime());
+        temp.plusMinutes(FETCH_INTERVAL);
+        if(temp.isAfter(now)) {
+            this.lastFetchTime = DateTime.now();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void initCache() {
+        this.swaggerApisCache = new ArrayList<>();
+        this.postmanApisCache = new JsonArray();
+    }
+
+    private void populatePaths(String serviceName, String prefix, Object SwaggerDoc) {
         var result = new OpenAPIV3Parser().readContents(gson.toJson(SwaggerDoc));
         var openApi = result.getOpenAPI();
-        
+        populateSwaggerApi(serviceName, prefix, openApi);
+        populatePostmanApis(openApi);
+    }
+
+    private void populatePostmanApis(OpenAPI openAPI) {
+        String collectionName = getCollectionName(openAPI);
+        JsonObject collection = convertToPostmanCollection(openAPI, collectionName);
+        postmanApisCache.add(collection);
+    }
+
+    private String getCollectionName(OpenAPI openAPI) {
+        // Return a name for the collection based on the OpenAPI specification
+        // This could be derived from the info.title or a custom naming convention
+        return openAPI.getInfo() != null ? openAPI.getInfo().getTitle() : "Unnamed Collection";
+    }
+
+    private JsonObject convertToPostmanCollection(OpenAPI openAPI, String collectionName) {
+        JsonObject collection = new JsonObject();
+        collection.addProperty("info", collectionName);
+        collection.addProperty("version", "2.1");
+        JsonArray itemArray = new JsonArray();
+
+        Paths paths = openAPI.getPaths();
+        for (Map.Entry<String, PathItem> entry : paths.entrySet()) {
+            String path = entry.getKey();
+            PathItem pathItem = entry.getValue();
+
+            for (Map.Entry<PathItem.HttpMethod, Operation> methodEntry : pathItem.readOperationsMap().entrySet()) {
+                PathItem.HttpMethod method = methodEntry.getKey();
+                Operation operation = methodEntry.getValue();
+
+                JsonObject request = new JsonObject();
+                request.addProperty("name", operation.getOperationId());
+                request.addProperty("request", path);
+                request.addProperty("method", method.name());
+
+                JsonObject requestObject = new JsonObject();
+                requestObject.addProperty("method", method.name());
+                requestObject.addProperty("header", "Content-Type: application/json");
+                requestObject.addProperty("body", "{}"); // Add actual body if available
+                requestObject.addProperty("url", path);
+
+                request.add("request", requestObject);
+
+                itemArray.add(request);
+            }
+        }
+
+        collection.add("item", itemArray);
+        return collection;
+    }
+
+    private void populateSwaggerApi(String serviceName, String prefix, OpenAPI openApi) {
         var api = new SwaggerApi();
         api.setServiceName(serviceName);
         api.setPrefix(prefix);
@@ -92,8 +191,7 @@ public class SwaggerService {
             isEmpty(pathItem.getOptions(), p -> api.getPaths().add(populateSwaggerPath(path, p, "OPTIONS")));
             isEmpty(pathItem.getTrace(), p -> api.getPaths().add(populateSwaggerPath(path, p, "TRACE")));
         });
-
-        return api;
+        this.swaggerApisCache.add(api);
     }
 
     private SwaggerPath populateSwaggerPath(SwaggerPath path, Operation operation, String methodName) {
