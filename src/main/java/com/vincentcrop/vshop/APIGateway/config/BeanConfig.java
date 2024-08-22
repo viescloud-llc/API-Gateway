@@ -26,7 +26,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import com.google.gson.Gson;
 
 @Configuration
-public class BeanConfig {
+public class BeanConfig extends com.vincent.inc.viesspringutils.config.BeanConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
 
