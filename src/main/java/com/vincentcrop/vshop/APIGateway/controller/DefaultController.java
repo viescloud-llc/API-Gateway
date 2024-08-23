@@ -38,7 +38,7 @@ public class DefaultController {
         return swaggerService.getAllEndpointSumary();
     }
 
-    @GetMapping("/postman/collection")
+    @GetMapping(value = "/postman/collection", produces = "application/json")
     public Object getPostmanCollection() {
         return swaggerService.getPostmanCollection();
     }
