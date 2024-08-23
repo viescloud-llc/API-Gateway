@@ -75,8 +75,12 @@ public class SwaggerService {
 
     public String getPostmanCollection() {
         populateDocs();
+        JsonObject header = new JsonObject();
+        header.addProperty("name", "V-eco");
+        header.addProperty("schema", "https://schema.getpostman.com/json/collection/v2.1.0/collection.json");
         JsonObject rootObject = new JsonObject();
-        rootObject.add("collections", postmanApisCache);
+        rootObject.add("info", header);
+        rootObject.add("item", postmanApisCache);
         return gson.toJson(rootObject);
     }
 
@@ -101,9 +105,9 @@ public class SwaggerService {
         }
 
         var now = DateTime.now();
-        var temp = DateTime.of(this.lastFetchTime.toLocalDateTime());
-        temp.plusMinutes(FETCH_INTERVAL);
-        if(temp.isAfter(now)) {
+        var temp = DateTime.of(this.lastFetchTime);
+        temp.plusSeconds(FETCH_INTERVAL);
+        if(temp.isBefore(now)) {
             this.lastFetchTime = DateTime.now();
             return true;
         }
@@ -120,25 +124,17 @@ public class SwaggerService {
         var result = new OpenAPIV3Parser().readContents(gson.toJson(SwaggerDoc));
         var openApi = result.getOpenAPI();
         populateSwaggerApi(serviceName, prefix, openApi);
-        populatePostmanApis(openApi);
+        populatePostmanApis(serviceName, prefix, openApi);
     }
 
-    private void populatePostmanApis(OpenAPI openAPI) {
-        String collectionName = getCollectionName(openAPI);
-        JsonObject collection = convertToPostmanCollection(openAPI, collectionName);
+    private void populatePostmanApis(String serviceName, String prefix, OpenAPI openAPI) {
+        JsonObject collection = convertToPostmanCollection(serviceName, prefix, openAPI);
         postmanApisCache.add(collection);
     }
 
-    private String getCollectionName(OpenAPI openAPI) {
-        // Return a name for the collection based on the OpenAPI specification
-        // This could be derived from the info.title or a custom naming convention
-        return openAPI.getInfo() != null ? openAPI.getInfo().getTitle() : "Unnamed Collection";
-    }
-
-    private JsonObject convertToPostmanCollection(OpenAPI openAPI, String collectionName) {
+    private JsonObject convertToPostmanCollection(String collectionName, String prefix, OpenAPI openAPI) {
         JsonObject collection = new JsonObject();
-        collection.addProperty("info", collectionName);
-        collection.addProperty("version", "2.1");
+        collection.addProperty("name", collectionName);
         JsonArray itemArray = new JsonArray();
 
         Paths paths = openAPI.getPaths();
