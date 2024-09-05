@@ -17,13 +17,13 @@ import com.vincent.inc.viesspringutils.util.DateTime;
 import com.vincentcrop.vshop.APIGateway.fiegn.AffiliateMarketingClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.FileManagerClient;
+import com.vincentcrop.vshop.APIGateway.fiegn.ObjectStorageManagerClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.RaphaelClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.SaturdayClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.SmbFileManagerClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.VGameClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.VenkinsClient;
 import com.vincentcrop.vshop.APIGateway.model.ServiceEnum;
-import com.vincentcrop.vshop.APIGateway.model.ServicePrefixEnum;
 import com.vincentcrop.vshop.APIGateway.model.SwaggerApi;
 import com.vincentcrop.vshop.APIGateway.model.SwaggerMethod;
 import com.vincentcrop.vshop.APIGateway.model.SwaggerPath;
@@ -62,6 +62,9 @@ public class SwaggerService {
     @Autowired
     private VGameClient vGameClient;
 
+    @Autowired
+    private ObjectStorageManagerClient objectStorageManagerClient;
+
     private List<SwaggerApi> swaggerApisCache;
     private JsonArray postmanApisCache;
 
@@ -87,14 +90,15 @@ public class SwaggerService {
     private synchronized void populateDocs() {
         if(this.isFetchTime()) {
             initCache();
-            doTry(() -> affiliateMarketingClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), ServicePrefixEnum.AFFILIATE_MARKETING_SERVICE.getPrefix(), s));
-            doTry(() -> authenticatorClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), ServicePrefixEnum.AUTHENTICATOR_SERVICE.getPrefix(), s));
-            doTry(() -> fileManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.FILE_MANAGER_SERVICE.getPrefix(), s));
-            doTry(() -> raphaelClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.RAPHAEL_SERVICE.getName(), ServicePrefixEnum.RAPHAEL_SERVICE.getPrefix(), s));
-            doTry(() -> saturdayClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.SATURDAY_SERVICE.getName(), ServicePrefixEnum.SATURDAY_SERVICE.getPrefix(), s));
-            doTry(() -> smbFileManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), ServicePrefixEnum.SMB_FILE_MANAGER_SERVICE.getPrefix(), s));
-            doTry(() -> venkinsClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServicePrefixEnum.VENKINS_SERVICE.getPrefix(), s));
-            doTry(() -> vGameClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServicePrefixEnum.VGAME_SERVICE.getPrefix(), s));
+            doTry(() -> affiliateMarketingClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), ServiceEnum.AFFILIATE_MARKETING_SERVICE.getPrefix(), s));
+            doTry(() -> authenticatorClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), ServiceEnum.AUTHENTICATOR_SERVICE.getPrefix(), s));
+            doTry(() -> fileManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.FILE_MANAGER_SERVICE.getName(), ServiceEnum.FILE_MANAGER_SERVICE.getPrefix(), s));
+            doTry(() -> raphaelClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.RAPHAEL_SERVICE.getName(), ServiceEnum.RAPHAEL_SERVICE.getPrefix(), s));
+            doTry(() -> saturdayClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.SATURDAY_SERVICE.getName(), ServiceEnum.SATURDAY_SERVICE.getPrefix(), s));
+            doTry(() -> smbFileManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), ServiceEnum.SMB_FILE_MANAGER_SERVICE.getPrefix(), s));
+            doTry(() -> venkinsClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServiceEnum.VENKINS_SERVICE.getPrefix(), s));
+            doTry(() -> vGameClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServiceEnum.VGAME_SERVICE.getPrefix(), s));
+            doTry(() -> objectStorageManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getName(), ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getPrefix(), s));
         }
     }
 

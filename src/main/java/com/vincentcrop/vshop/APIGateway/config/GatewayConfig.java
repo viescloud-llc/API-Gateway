@@ -10,7 +10,6 @@ import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilter;
 import com.vincentcrop.vshop.APIGateway.config.filter.AuthenticationFilterBypass;
 import com.vincentcrop.vshop.APIGateway.config.filter.DefaultEndpointFilter;
 import com.vincentcrop.vshop.APIGateway.model.ServiceEnum;
-import com.vincentcrop.vshop.APIGateway.model.ServicePrefixEnum;
 
 @Configuration
 public class GatewayConfig {
@@ -28,49 +27,54 @@ public class GatewayConfig {
         return builder.routes()
                 // ------------------------AUTHENTICATOR-SERVICE------------------------------
                 .route(ServiceEnum.AUTHENTICATOR_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.AUTHENTICATOR_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.AUTHENTICATOR_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.AUTHENTICATOR_SERVICE.getName()))
                 // ------------------------ITEM-SERVICE---------------------------------------
                 .route(ServiceEnum.ITEM_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.ITEM_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.ITEM_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.ITEM_SERVICE.getName()))
                 // ------------------------GAME-SERVICE---------------------------------------
                 .route(ServiceEnum.VGAME_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.VGAME_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.VGAME_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.VGAME_SERVICE.getName()))
                 // ------------------------FILE-MANAGER-SERVICE-------------------------------
                 .route(ServiceEnum.FILE_MANAGER_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.FILE_MANAGER_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.FILE_MANAGER_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.FILE_MANAGER_SERVICE.getName()))
                 // ------------------------SMB-FILE-MANAGER-SERVICE-------------------------------
                 .route(ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.SMB_FILE_MANAGER_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.SMB_FILE_MANAGER_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilterBypass).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.SMB_FILE_MANAGER_SERVICE.getName()))
                 // ------------------------SATURDAY-SERVICE-------------------------------
                 .route(ServiceEnum.SATURDAY_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.SATURDAY_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.SATURDAY_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.SATURDAY_SERVICE.getName()))
                 // ------------------------VENKINS-SERVICE-------------------------------
                 .route(ServiceEnum.VENKINS_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.VENKINS_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.VENKINS_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.VENKINS_SERVICE.getName()))
                 // ------------------------RAPHAEL-SERVICE-------------------------------
                 .route(ServiceEnum.RAPHAEL_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.RAPHAEL_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.RAPHAEL_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.RAPHAEL_SERVICE.getName()))
                 // ------------------------AFFILIATE-MARKETING-SERVICE-------------------------------
                 .route(ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName(), r -> r
-                        .path(String.format("/%s/**", ServicePrefixEnum.AFFILIATE_MARKETING_SERVICE.getPrefix()))
+                        .path(String.format("/%s/**", ServiceEnum.AFFILIATE_MARKETING_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.AFFILIATE_MARKETING_SERVICE.getName()))
+                // ------------------------OBJECT-STORAGE-MANAGER-SERVICE-------------------------------
+                .route(ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getName(), r -> r
+                        .path(String.format("/%s/**", ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getPrefix()))
+                        .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                        .uri("lb://" + ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getName()))
                 // ------------------------DEFAULT-USER-SERVICE-------------------------------
                 .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/user")
