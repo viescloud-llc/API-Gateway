@@ -93,22 +93,22 @@ public class DefaultController {
         return swaggerService.getPostmanCollection();
     }
 
-    @GetMapping("/check-site/{url}")
-    public ResponseEntity<FetchResponse> checkUrl1(@PathVariable(value = "url") String pathUrl) {
-        return fetchUrl(pathUrl);
-    }
+    // @GetMapping("/check-site/{url}")
+    // public ResponseEntity<FetchResponse> checkUrl1(@PathVariable(value = "url") String pathUrl) {
+    //     return fetchUrl(pathUrl);
+    // }
 
-    @GetMapping("/check-site")
-    public ResponseEntity<FetchResponse> checkUrl2(@RequestParam(value = "url") String queryUrl) {
-        return fetchUrl(queryUrl);
-    }
+    // @GetMapping("/check-site")
+    // public ResponseEntity<FetchResponse> checkUrl2(@RequestParam(value = "url") String queryUrl) {
+    //     return fetchUrl(queryUrl);
+    // }
 
-    private ResponseEntity<FetchResponse> fetchUrl(String pathUrl) {
-        try {
-            ResponseEntity<String> response = restTemplate.getForEntity(pathUrl, String.class);
-            return ResponseEntity.status(response.getStatusCode()).body(new FetchResponse(pathUrl, response.getStatusCode().value()));
-        } catch (ResourceAccessException e) {
-            return ResponseEntity.status(404).body(new FetchResponse(pathUrl, 404));
-        }
-    }
+    // private ResponseEntity<FetchResponse> fetchUrl(String pathUrl) {
+    //     try {
+    //         ResponseEntity<String> response = restTemplate.getForEntity(pathUrl, String.class);
+    //         return ResponseEntity.status(response.getStatusCode()).body(new FetchResponse(pathUrl, response.getStatusCode().value()));
+    //     } catch (ResourceAccessException e) {
+    //         return ResponseEntity.status(404).body(new FetchResponse(pathUrl, 404));
+    //     }
+    // }
 }
