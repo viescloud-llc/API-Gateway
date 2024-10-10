@@ -86,7 +86,13 @@ public class DefaultEndpointFilter implements GatewayFilter {
                     HttpResponseThrowers.throwNotFound("No Path found");
             }
 
-            request = request.mutate().path(newPath).build();
+            final String token = AuthenticationFilter.getBearerJwt(exchange.getRequest());
+
+            if(token != null)
+                request = request.mutate().path(newPath).header("Authorization", token).build();
+            else
+                request = request.mutate().path(newPath).build();
+
             return chain.filter(exchange.mutate().request(request).build());
             
         } catch (ResponseStatusException ex) {
