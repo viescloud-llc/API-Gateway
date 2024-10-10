@@ -1,6 +1,7 @@
 package com.vincentcrop.vshop.APIGateway.config.filter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -177,31 +178,21 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     public static String getBearerJwt(ServerHttpRequest request) {
-        List<String> headers = request.getHeaders().getOrEmpty("Authorization");
-        if(headers.isEmpty())
-            headers = request.getHeaders().getOrEmpty("authorization");
+        String bearer = Optional.ofNullable(request.getHeaders().getFirst("Authorization"))
+                                .or(() -> Optional.ofNullable(request.getHeaders().getFirst("authorization")))
+                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("Authorization")))
+                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("authorization")))
+                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("jwt")))
+                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("Jwt")))
+                                .orElse(null);
 
-        var params = request.getQueryParams();
-
-        if (headers.isEmpty() && !params.containsKey("authorization") && !params.containsKey("Authorization"))
+        if (bearer == null)
             return null;
-            
-        String bearer = null;
 
-        if(!headers.isEmpty())
-            bearer = headers.get(0);
-
-        //get jwt from query
-        if(ObjectUtils.isEmpty(bearer)) {
-            if(params.containsKey("authorization"))
-                bearer = params.get("authorization").get(0);
-            else
-                bearer = params.get("Authorization").get(0);
-            return bearer;
+        // Check if the string starts with "Bearer " (case insensitive), if not, prepend "Bearer "
+        if (!bearer.toLowerCase().startsWith("bearer ")) {
+            bearer = "Bearer " + bearer;
         }
-
-        if (!(bearer.contains("Bearer") || bearer.contains("bearer")))
-            HttpResponseThrowers.throwBadRequest("Token is not bearer token");
 
         return bearer;
     }

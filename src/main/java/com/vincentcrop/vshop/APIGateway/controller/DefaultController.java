@@ -4,16 +4,11 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuil
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import com.vincentcrop.vshop.APIGateway.model.FetchResponse;
 import com.vincentcrop.vshop.APIGateway.service.SwaggerService;
 import com.vincentcrop.vshop.APIGateway.util.Time;
 
@@ -92,23 +87,4 @@ public class DefaultController {
     public Object getPostmanCollection() {
         return swaggerService.getPostmanCollection();
     }
-
-    // @GetMapping("/check-site/{url}")
-    // public ResponseEntity<FetchResponse> checkUrl1(@PathVariable(value = "url") String pathUrl) {
-    //     return fetchUrl(pathUrl);
-    // }
-
-    // @GetMapping("/check-site")
-    // public ResponseEntity<FetchResponse> checkUrl2(@RequestParam(value = "url") String queryUrl) {
-    //     return fetchUrl(queryUrl);
-    // }
-
-    // private ResponseEntity<FetchResponse> fetchUrl(String pathUrl) {
-    //     try {
-    //         ResponseEntity<String> response = restTemplate.getForEntity(pathUrl, String.class);
-    //         return ResponseEntity.status(response.getStatusCode()).body(new FetchResponse(pathUrl, response.getStatusCode().value()));
-    //     } catch (ResourceAccessException e) {
-    //         return ResponseEntity.status(404).body(new FetchResponse(pathUrl, 404));
-    //     }
-    // }
 }
