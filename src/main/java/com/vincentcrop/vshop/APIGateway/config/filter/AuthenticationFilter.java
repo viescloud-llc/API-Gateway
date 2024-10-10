@@ -178,23 +178,36 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     public static String getBearerJwt(ServerHttpRequest request) {
-        String bearer = Optional.ofNullable(request.getHeaders().getFirst("Authorization"))
-                                .or(() -> Optional.ofNullable(request.getHeaders().getFirst("authorization")))
-                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("Authorization")))
-                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("authorization")))
-                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("jwt")))
-                                .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("Jwt")))
-                                .orElse(null);
+        String auth = Optional.ofNullable(request.getHeaders().getFirst("Authorization"))
+                              .or(() -> Optional.ofNullable(request.getHeaders().getFirst("authorization")))
+                              .orElse(null);
 
-        if (bearer == null)
-            return null;
+        String jwt = Optional.ofNullable(request.getQueryParams().getFirst("Authorization"))
+                             .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("authorization")))
+                             .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("jwt")))
+                             .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("Jwt")))
+                             .orElse(null);
 
-        // Check if the string starts with "Bearer " (case insensitive), if not, prepend "Bearer "
-        if (!bearer.toLowerCase().startsWith("bearer ")) {
-            bearer = "Bearer " + bearer;
+        String token = Optional.ofNullable(request.getQueryParams().getFirst("Token"))
+                               .or(() -> Optional.ofNullable(request.getQueryParams().getFirst("token")))
+                               .orElse(null);
+
+        if(auth != null)
+            return auth;
+
+        if(jwt != null) {
+            if(!jwt.toLowerCase().startsWith("bearer "))
+                jwt = "Bearer " + jwt;
+            return jwt;
         }
 
-        return bearer;
+        if(token != null) {
+            if(!token.toLowerCase().startsWith("token "))
+                token = "Token " + token;
+            return token;
+        }
+
+        return null;
     }
 
     public static String extractJwt(String Authorization) {
