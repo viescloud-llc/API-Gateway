@@ -75,6 +75,11 @@ public class GatewayConfig {
                         .path(String.format("/%s/**", ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getPrefix()))
                         .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
                         .uri("lb://" + ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getName()))
+                // ------------------------DNS-MANAGER-SERVICE-------------------------------
+                .route(ServiceEnum.DNS_MANAGER_SERVICE.getName(), r -> r
+                        .path(String.format("/%s/**", ServiceEnum.DNS_MANAGER_SERVICE.getPrefix()))
+                        .filters(f -> f.filter(authenticationFilter).stripPrefix(1))
+                        .uri("lb://" + ServiceEnum.DNS_MANAGER_SERVICE.getName()))
                 // ------------------------DEFAULT-USER-SERVICE-------------------------------
                 .route("DEFAULT-USER-SERVICE", r -> r
                         .path("/user")

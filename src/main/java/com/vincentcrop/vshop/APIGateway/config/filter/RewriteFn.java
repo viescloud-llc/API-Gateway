@@ -1,20 +1,14 @@
 package com.vincentcrop.vshop.APIGateway.config.filter;
 
 import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-
-import com.google.gson.Gson;
 
 import reactor.core.publisher.Mono;
 
 @Component
 public class RewriteFn implements RewriteFunction<String, String> {
-
-    @Autowired
-    private Gson gson;
 
     @Override
     public Publisher<String> apply(ServerWebExchange exchange, String u) {

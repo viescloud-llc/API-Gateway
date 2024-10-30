@@ -3,12 +3,15 @@ package com.vincentcrop.vshop.APIGateway.config;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +27,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.converter.HttpMessageConverter;
 
 import com.google.gson.Gson;
+import com.viescloud.llc.viesspringutils.config.RestTemplateConfig;
 
 @Configuration
-public class BeanConfig extends com.vincent.inc.viesspringutils.config.BeanConfig {
+public class BeanConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
 
@@ -80,18 +84,11 @@ public class BeanConfig extends com.vincent.inc.viesspringutils.config.BeanConfi
     }
 
     @Bean
-    public static RestTemplate restTemplate(@Value("${http.connection-timeout.ms}") int connectTimeout) {
-        // RestTemplate restTemplate = restTemplateBuilder
-        // .setConnectTimeout(Duration.ofMillis(connectTimeout))
-        // .setReadTimeout(Duration.ofMillis(connectTimeout))
-        // .build();
-
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new RestTemplateErrorHandler());
-        return restTemplate;
+    public RestTemplate restTemplateConfig() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+        return RestTemplateConfig.getRestTemplate(true, Duration.ofSeconds(15), Duration.ofSeconds(15));
     }
 
-    private static class RestTemplateErrorHandler implements ResponseErrorHandler {
+    public static class RestTemplateErrorHandler implements ResponseErrorHandler {
 
         @Override
         public boolean hasError(ClientHttpResponse response) throws IOException {

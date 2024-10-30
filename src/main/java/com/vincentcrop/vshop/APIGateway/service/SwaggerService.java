@@ -13,9 +13,10 @@ import org.springframework.util.ObjectUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.vincent.inc.viesspringutils.util.DateTime;
+import com.viescloud.llc.viesspringutils.util.DateTime;
 import com.vincentcrop.vshop.APIGateway.fiegn.AffiliateMarketingClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.AuthenticatorClient;
+import com.vincentcrop.vshop.APIGateway.fiegn.DnsManagerClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.FileManagerClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.ObjectStorageManagerClient;
 import com.vincentcrop.vshop.APIGateway.fiegn.RaphaelClient;
@@ -65,6 +66,9 @@ public class SwaggerService {
     @Autowired
     private ObjectStorageManagerClient objectStorageManagerClient;
 
+    @Autowired
+    private DnsManagerClient dnsManagerClient;
+
     private List<SwaggerApi> swaggerApisCache;
     private JsonArray postmanApisCache;
 
@@ -99,6 +103,7 @@ public class SwaggerService {
             doTry(() -> venkinsClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VENKINS_SERVICE.getName(), ServiceEnum.VENKINS_SERVICE.getPrefix(), s));
             doTry(() -> vGameClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.VGAME_SERVICE.getName(), ServiceEnum.VGAME_SERVICE.getPrefix(), s));
             doTry(() -> objectStorageManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getName(), ServiceEnum.OBJECT_STORAGE_MANAGER_SERVICE.getPrefix(), s));
+            doTry(() -> dnsManagerClient.getSwaggerDocs(), s -> populatePaths(ServiceEnum.DNS_MANAGER_SERVICE.getName(), ServiceEnum.DNS_MANAGER_SERVICE.getPrefix(), s));
         }
     }
 

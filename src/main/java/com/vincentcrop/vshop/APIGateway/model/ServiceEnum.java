@@ -15,7 +15,8 @@ public enum ServiceEnum {
     SATURDAY_SERVICE(ServiceEnumConstant.SATURDAY_SERVICE, "saturday"),
     VENKINS_SERVICE(ServiceEnumConstant.VENKINS_SERVICE, "venkins"),
     RAPHAEL_SERVICE(ServiceEnumConstant.RAPHAEL_SERVICE, "raphael"),
-    AFFILIATE_MARKETING_SERVICE(ServiceEnumConstant.AFFILIATE_MARKETING_SERVICE, "affiliate_marketing");
+    AFFILIATE_MARKETING_SERVICE(ServiceEnumConstant.AFFILIATE_MARKETING_SERVICE, "affiliate_marketing"),
+    DNS_MANAGER_SERVICE(ServiceEnumConstant.DNS_MANAGER_SERVICE, "dns-manager");
 
     private final String name;
     private final String prefix;
@@ -31,5 +32,6 @@ public enum ServiceEnum {
         public static final String VENKINS_SERVICE = "VENKINS-SERVICE";
         public static final String RAPHAEL_SERVICE = "RAPHAEL-SERVICE";
         public static final String AFFILIATE_MARKETING_SERVICE = "AFFILIATE-MARKETING-SERVICE";
+        public static final String DNS_MANAGER_SERVICE = "DNS-MANAGER-SERVICE";
     }
 }
