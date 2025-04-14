@@ -27,7 +27,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.converter.HttpMessageConverter;
 
 import com.google.gson.Gson;
-import com.viescloud.llc.viesspringutils.config.RestTemplateConfig;
+import com.viescloud.eco.viesspringutils.config.RestTemplateConfig;
 
 @Configuration
 public class BeanConfig {

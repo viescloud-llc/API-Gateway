@@ -171,9 +171,9 @@
 
 		<!-- self host dependency -->
 		<dependency>
-			<groupId>com.viescloud.llc</groupId>
+			<groupId>com.viescloud.eco</groupId>
 			<artifactId>vies-spring-utils</artifactId>
-			<version>3.2.3</version>
+			<version>4.6.0</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
